@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\DR_APIs\Models\Diver.cs" Link="ModelsLinked\Diver.cs" />
+    <Compile Include="..\DR_APIs\Models\DiveSheet.cs" Link="ModelsLinked\DiveSheet.cs" />
+    <Compile Include="..\DR_APIs\Models\Event.cs" Link="ModelsLinked\Event.cs" />
+    <Compile Include="..\DR_APIs\Models\Meet.cs" Link="ModelsLinked\Meet.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ModelsLinked\" />
+  </ItemGroup>
+
+</Project>
