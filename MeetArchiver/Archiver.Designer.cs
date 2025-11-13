@@ -31,6 +31,7 @@
             menuStrip1 = new MenuStrip();
             loadDataToolStripMenuItem = new ToolStripMenuItem();
             splitContainer1 = new SplitContainer();
+            button1 = new Button();
             tabControl1 = new TabControl();
             meetTab = new TabPage();
             meetsList = new ListBox();
@@ -45,7 +46,6 @@
             matchedList = new ListBox();
             clubsTab = new TabPage();
             uploadTab = new TabPage();
-            button1 = new Button();
             menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -89,6 +89,16 @@
             splitContainer1.Size = new Size(1122, 578);
             splitContainer1.SplitterDistance = 25;
             splitContainer1.TabIndex = 1;
+            // 
+            // button1
+            // 
+            button1.Location = new Point(41, 4);
+            button1.Name = "button1";
+            button1.Size = new Size(75, 23);
+            button1.TabIndex = 0;
+            button1.Text = "button1";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
             // 
             // tabControl1
             // 
@@ -195,6 +205,7 @@
             typoList.Name = "typoList";
             typoList.Size = new Size(259, 439);
             typoList.TabIndex = 2;
+            typoList.SelectedIndexChanged += typoList_SelectedIndexChanged;
             // 
             // missingList
             // 
@@ -231,16 +242,6 @@
             uploadTab.TabIndex = 3;
             uploadTab.Text = "Upload";
             uploadTab.UseVisualStyleBackColor = true;
-            // 
-            // button1
-            // 
-            button1.Location = new Point(41, 4);
-            button1.Name = "button1";
-            button1.Size = new Size(75, 23);
-            button1.TabIndex = 0;
-            button1.Text = "button1";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
             // 
             // Archiver
             // 

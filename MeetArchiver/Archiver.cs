@@ -17,6 +17,10 @@ namespace MeetArchiver
         List<Diver> selectedDivers = new List<Diver>();
         List<DiveSheet> selectedDiveSheets = new List<DiveSheet>();
 
+        List<Diver> mismatchedDivers = new List<Diver>();
+        List<Diver> newDivers = new List<Diver>();
+        List<Diver> validatedDivers = new List<Diver>();
+
         public Archiver()
         {
             InitializeComponent();
@@ -127,9 +131,9 @@ namespace MeetArchiver
             var chekkedDivers = t.Result;
             WorkingForm.Close();
 
-            var validatedDivers = chekkedDivers.Where(ds => ds.Validated).ToList();
-            var mismatchedDivers = chekkedDivers.Where(ds => ds.PossibleMatches != null && ds.PossibleMatches.Count() != 0).ToList();
-            var newDivers = chekkedDivers.Except(validatedDivers).Except(mismatchedDivers).ToList();
+             validatedDivers = chekkedDivers.Where(ds => ds.Validated).ToList();
+             mismatchedDivers = chekkedDivers.Where(ds => ds.PossibleMatches != null && ds.PossibleMatches.Count() != 0).ToList();
+             newDivers = chekkedDivers.Except(validatedDivers).Except(mismatchedDivers).ToList();
 
             matchedList.Items.Clear();
             foreach (var diver in validatedDivers)
@@ -156,6 +160,12 @@ namespace MeetArchiver
         private void button1_Click(object sender, EventArgs e)
         {
             var frm = new DiverMatcher();
+            frm.ShowDialog();
+        }
+
+        private void typoList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var frm = new DiverMatcher(mismatchedDivers[typoList.SelectedIndex]);
             frm.ShowDialog();
         }
     }
