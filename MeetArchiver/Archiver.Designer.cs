@@ -28,9 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            menuStrip1 = new MenuStrip();
-            loadDataToolStripMenuItem = new ToolStripMenuItem();
             splitContainer1 = new SplitContainer();
+            InstructionLbl = new Label();
             tabControl1 = new TabControl();
             meetTab = new TabPage();
             meetsList = new ListBox();
@@ -44,21 +43,26 @@
             missingList = new ListBox();
             matchedList = new ListBox();
             clubsTab = new TabPage();
+            button1 = new Button();
             findBtn = new Button();
             searchTxt = new TextBox();
             searchClubLst = new ListBox();
             acceptSearchResultBtn = new Button();
             sugestedClubLst = new ListBox();
             acceptSuggestionBtn = new Button();
-            button1 = new Button();
             mismatchedClubsLst = new ListBox();
             label1 = new Label();
             groupBox1 = new GroupBox();
             groupBox2 = new GroupBox();
             uploadTab = new TabPage();
+            label2 = new Label();
+            logTxtBox = new RichTextBox();
             button2 = new Button();
-            menuStrip1.SuspendLayout();
+            comboBox1 = new ComboBox();
+            label3 = new Label();
+            checkBox1 = new CheckBox();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
+            splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
             tabControl1.SuspendLayout();
@@ -68,35 +72,34 @@
             uploadTab.SuspendLayout();
             SuspendLayout();
             // 
-            // menuStrip1
-            // 
-            menuStrip1.Items.AddRange(new ToolStripItem[] { loadDataToolStripMenuItem });
-            menuStrip1.Location = new Point(0, 0);
-            menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new Size(1122, 24);
-            menuStrip1.TabIndex = 0;
-            menuStrip1.Text = "menuStrip1";
-            // 
-            // loadDataToolStripMenuItem
-            // 
-            loadDataToolStripMenuItem.Name = "loadDataToolStripMenuItem";
-            loadDataToolStripMenuItem.Size = new Size(72, 20);
-            loadDataToolStripMenuItem.Text = "Load Data";
-            loadDataToolStripMenuItem.Click += loadDataToolStripMenuItem_Click;
-            // 
             // splitContainer1
             // 
             splitContainer1.Dock = DockStyle.Fill;
-            splitContainer1.Location = new Point(0, 24);
+            splitContainer1.Location = new Point(0, 0);
             splitContainer1.Name = "splitContainer1";
             splitContainer1.Orientation = Orientation.Horizontal;
+            // 
+            // splitContainer1.Panel1
+            // 
+            splitContainer1.Panel1.Controls.Add(InstructionLbl);
             // 
             // splitContainer1.Panel2
             // 
             splitContainer1.Panel2.Controls.Add(tabControl1);
-            splitContainer1.Size = new Size(1122, 578);
-            splitContainer1.SplitterDistance = 25;
+            splitContainer1.Size = new Size(1122, 602);
+            splitContainer1.SplitterDistance = 63;
             splitContainer1.TabIndex = 1;
+            // 
+            // InstructionLbl
+            // 
+            InstructionLbl.AutoSize = true;
+            InstructionLbl.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+            InstructionLbl.ForeColor = Color.DarkGreen;
+            InstructionLbl.Location = new Point(12, 11);
+            InstructionLbl.Name = "InstructionLbl";
+            InstructionLbl.Size = new Size(51, 20);
+            InstructionLbl.TabIndex = 0;
+            InstructionLbl.Text = "label2";
             // 
             // tabControl1
             // 
@@ -108,8 +111,9 @@
             tabControl1.Location = new Point(0, 0);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(1122, 549);
+            tabControl1.Size = new Size(1122, 535);
             tabControl1.TabIndex = 0;
+            tabControl1.SelectedIndexChanged += tabControl1_SelectedIndexChanged;
             // 
             // meetTab
             // 
@@ -117,7 +121,7 @@
             meetTab.Location = new Point(4, 24);
             meetTab.Name = "meetTab";
             meetTab.Padding = new Padding(3);
-            meetTab.Size = new Size(1114, 521);
+            meetTab.Size = new Size(1114, 507);
             meetTab.TabIndex = 0;
             meetTab.Text = "Meet";
             meetTab.UseVisualStyleBackColor = true;
@@ -145,7 +149,7 @@
             diversTab.Location = new Point(4, 24);
             diversTab.Name = "diversTab";
             diversTab.Padding = new Padding(3);
-            diversTab.Size = new Size(1114, 521);
+            diversTab.Size = new Size(1114, 507);
             diversTab.TabIndex = 1;
             diversTab.Text = "Divers";
             diversTab.UseVisualStyleBackColor = true;
@@ -225,27 +229,36 @@
             // 
             // clubsTab
             // 
+            clubsTab.Controls.Add(button1);
             clubsTab.Controls.Add(findBtn);
             clubsTab.Controls.Add(searchTxt);
             clubsTab.Controls.Add(searchClubLst);
             clubsTab.Controls.Add(acceptSearchResultBtn);
             clubsTab.Controls.Add(sugestedClubLst);
             clubsTab.Controls.Add(acceptSuggestionBtn);
-            clubsTab.Controls.Add(button1);
             clubsTab.Controls.Add(mismatchedClubsLst);
             clubsTab.Controls.Add(label1);
             clubsTab.Controls.Add(groupBox1);
             clubsTab.Controls.Add(groupBox2);
             clubsTab.Location = new Point(4, 24);
             clubsTab.Name = "clubsTab";
-            clubsTab.Size = new Size(1114, 521);
+            clubsTab.Size = new Size(1114, 507);
             clubsTab.TabIndex = 2;
             clubsTab.Text = "Clubs";
             clubsTab.UseVisualStyleBackColor = true;
             // 
+            // button1
+            // 
+            button1.Location = new Point(316, 411);
+            button1.Name = "button1";
+            button1.Size = new Size(126, 23);
+            button1.TabIndex = 14;
+            button1.Text = "Create new Club";
+            button1.UseVisualStyleBackColor = true;
+            // 
             // findBtn
             // 
-            findBtn.Location = new Point(574, 269);
+            findBtn.Location = new Point(574, 229);
             findBtn.Name = "findBtn";
             findBtn.Size = new Size(75, 23);
             findBtn.TabIndex = 11;
@@ -255,7 +268,7 @@
             // 
             // searchTxt
             // 
-            searchTxt.Location = new Point(332, 269);
+            searchTxt.Location = new Point(332, 229);
             searchTxt.Name = "searchTxt";
             searchTxt.Size = new Size(222, 23);
             searchTxt.TabIndex = 10;
@@ -264,14 +277,14 @@
             // 
             searchClubLst.FormattingEnabled = true;
             searchClubLst.ItemHeight = 15;
-            searchClubLst.Location = new Point(332, 312);
+            searchClubLst.Location = new Point(332, 272);
             searchClubLst.Name = "searchClubLst";
             searchClubLst.Size = new Size(222, 94);
             searchClubLst.TabIndex = 9;
             // 
             // acceptSearchResultBtn
             // 
-            acceptSearchResultBtn.Location = new Point(574, 312);
+            acceptSearchResultBtn.Location = new Point(574, 272);
             acceptSearchResultBtn.Name = "acceptSearchResultBtn";
             acceptSearchResultBtn.Size = new Size(75, 23);
             acceptSearchResultBtn.TabIndex = 8;
@@ -298,23 +311,13 @@
             acceptSuggestionBtn.UseVisualStyleBackColor = true;
             acceptSuggestionBtn.Click += acceptSuggestionBtn_Click;
             // 
-            // button1
-            // 
-            button1.Location = new Point(133, 11);
-            button1.Name = "button1";
-            button1.Size = new Size(75, 23);
-            button1.TabIndex = 2;
-            button1.Text = "button1";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
-            // 
             // mismatchedClubsLst
             // 
             mismatchedClubsLst.FormattingEnabled = true;
             mismatchedClubsLst.ItemHeight = 15;
             mismatchedClubsLst.Location = new Point(12, 40);
             mismatchedClubsLst.Name = "mismatchedClubsLst";
-            mismatchedClubsLst.Size = new Size(222, 394);
+            mismatchedClubsLst.Size = new Size(270, 394);
             mismatchedClubsLst.TabIndex = 1;
             mismatchedClubsLst.SelectedIndexChanged += mismatchedClubsLst_SelectedIndexChanged;
             // 
@@ -329,7 +332,7 @@
             // 
             // groupBox1
             // 
-            groupBox1.Location = new Point(316, 225);
+            groupBox1.Location = new Point(316, 178);
             groupBox1.Name = "groupBox1";
             groupBox1.Size = new Size(360, 206);
             groupBox1.TabIndex = 12;
@@ -347,23 +350,74 @@
             // 
             // uploadTab
             // 
+            uploadTab.Controls.Add(checkBox1);
+            uploadTab.Controls.Add(label3);
+            uploadTab.Controls.Add(comboBox1);
+            uploadTab.Controls.Add(label2);
+            uploadTab.Controls.Add(logTxtBox);
             uploadTab.Controls.Add(button2);
             uploadTab.Location = new Point(4, 24);
             uploadTab.Name = "uploadTab";
-            uploadTab.Size = new Size(1114, 521);
+            uploadTab.Size = new Size(1114, 507);
             uploadTab.TabIndex = 3;
             uploadTab.Text = "Upload";
             uploadTab.UseVisualStyleBackColor = true;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(35, 70);
+            label2.Name = "label2";
+            label2.Size = new Size(32, 15);
+            label2.TabIndex = 2;
+            label2.Text = "Logs";
+            // 
+            // logTxtBox
+            // 
+            logTxtBox.Location = new Point(35, 88);
+            logTxtBox.Name = "logTxtBox";
+            logTxtBox.Size = new Size(470, 384);
+            logTxtBox.TabIndex = 1;
+            logTxtBox.Text = "";
             // 
             // button2
             // 
             button2.Location = new Point(32, 26);
             button2.Name = "button2";
-            button2.Size = new Size(75, 23);
+            button2.Size = new Size(107, 23);
             button2.TabIndex = 0;
-            button2.Text = "button2";
+            button2.Text = "Archive Meet";
             button2.UseVisualStyleBackColor = true;
             button2.Click += button2_Click;
+            // 
+            // comboBox1
+            // 
+            comboBox1.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+            comboBox1.FormattingEnabled = true;
+            comboBox1.Items.AddRange(new object[] { "AFG", "ALA", "ALB", "DZA", "ASM", "AND", "AGO", "AIA", "ATA", "ATG", "ARG", "ARM", "ABW", "AUS", "AUT", "AZE", "BHS", "BHR", "BGD", "BRB", "BLR", "BEL", "BLZ", "BEN", "BMU", "BTN", "BOL", "BES", "BIH", "BWA", "BVT", "BRA", "IOT", "BRN", "BGR", "BFA", "BDI", "CPV", "KHM", "CMR", "CAN", "CYM", "CAF", "TCD", "CHL", "CHN", "CXR", "CCK", "COL", "COM", "COD", "COG", "COK", "CRI", "HRV", "CUB", "CUW", "CYP", "CZE", "CIV", "DNK", "DJI", "DMA", "DOM", "ECU", "EGY", "SLV", "GNQ", "ERI", "EST", "SWZ", "ETH", "FLK", "FRO", "FJI", "FIN", "FRA", "GUF", "PYF", "ATF", "GAB", "GMB", "GEO", "DEU", "GHA", "GIB", "GRC", "GRL", "GRD", "GLP", "GUM", "GTM", "GGY", "GIN", "GNB", "GUY", "HTI", "HMD", "VAT", "HND", "HKG", "HUN", "ISL", "IND", "IDN", "IRN", "IRQ", "IRL", "IMN", "ISR", "ITA", "JAM", "JPN", "JEY", "JOR", "KAZ", "KEN", "KIR", "PRK", "KOR", "KWT", "KGZ", "LAO", "LVA", "LBN", "LSO", "LBR", "LBY", "LIE", "LTU", "LUX", "MAC", "MDG", "MWI", "MYS", "MDV", "MLI", "MLT", "MHL", "MTQ", "MRT", "MUS", "MYT", "MEX", "FSM", "MDA", "MCO", "MNG", "MNE", "MSR", "MAR", "MOZ", "MMR", "NAM", "NRU", "NPL", "NLD", "NCL", "NZL", "NIC", "NER", "NGA", "NIU", "NFK", "MNP", "NOR", "OMN", "PAK", "PLW", "PSE", "PAN", "PNG", "PRY", "PER", "PHL", "PCN", "POL", "PRT", "PRI", "QAT", "MKD", "ROU", "RUS", "RWA", "REU", "BLM", "SHN", "KNA", "LCA", "MAF", "SPM", "VCT", "WSM", "SMR", "STP", "SAU", "SEN", "SRB", "SYC", "SLE", "SGP", "SXM", "SVK", "SVN", "SLB", "SOM", "ZAF", "SGS", "SSD", "ESP", "LKA", "SDN", "SUR", "SJM", "SWE", "CHE", "SYR", "TWN", "TJK", "TZA", "THA", "TLS", "TGO", "TKL", "TON", "TTO", "TUN", "TUR", "TKM", "TCA", "TUV", "UGA", "UKR", "ARE", "GBR", "UMI", "USA", "URY", "UZB", "VUT", "VEN", "VNM", "VGB", "VIR", "WLF", "ESH", "YEM", "ZMB", "ZWE" });
+            comboBox1.Location = new Point(606, 88);
+            comboBox1.Name = "comboBox1";
+            comboBox1.Size = new Size(121, 23);
+            comboBox1.TabIndex = 3;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new Point(606, 70);
+            label3.Name = "label3";
+            label3.Size = new Size(43, 15);
+            label3.TabIndex = 4;
+            label3.Text = "Nation";
+            // 
+            // checkBox1
+            // 
+            checkBox1.AutoSize = true;
+            checkBox1.Location = new Point(606, 30);
+            checkBox1.Name = "checkBox1";
+            checkBox1.Size = new Size(123, 19);
+            checkBox1.TabIndex = 5;
+            checkBox1.Text = "International Meet";
+            checkBox1.UseVisualStyleBackColor = true;
             // 
             // Archiver
             // 
@@ -371,12 +425,11 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1122, 602);
             Controls.Add(splitContainer1);
-            Controls.Add(menuStrip1);
-            MainMenuStrip = menuStrip1;
             Name = "Archiver";
             Text = "Meet Archiver";
-            menuStrip1.ResumeLayout(false);
-            menuStrip1.PerformLayout();
+            Load += Archiver_Load;
+            splitContainer1.Panel1.ResumeLayout(false);
+            splitContainer1.Panel1.PerformLayout();
             splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
             splitContainer1.ResumeLayout(false);
@@ -387,14 +440,11 @@
             clubsTab.ResumeLayout(false);
             clubsTab.PerformLayout();
             uploadTab.ResumeLayout(false);
+            uploadTab.PerformLayout();
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
-
-        private MenuStrip menuStrip1;
-        private ToolStripMenuItem loadDataToolStripMenuItem;
         private SplitContainer splitContainer1;
         private TabControl tabControl1;
         private TabPage meetTab;
@@ -412,7 +462,6 @@
         private Label withdrawnLbl;
         private ListBox mismatchedClubsLst;
         private Label label1;
-        private Button button1;
         private ListBox sugestedClubLst;
         private Button acceptSuggestionBtn;
         private ListBox searchClubLst;
@@ -422,5 +471,12 @@
         private GroupBox groupBox1;
         private GroupBox groupBox2;
         private Button button2;
+        private Label InstructionLbl;
+        private Label label2;
+        private RichTextBox logTxtBox;
+        private Button button1;
+        private CheckBox checkBox1;
+        private Label label3;
+        private ComboBox comboBox1;
     }
 }

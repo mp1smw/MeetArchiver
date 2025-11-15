@@ -44,6 +44,17 @@ namespace MeetArchiver
                 return;
             }
 
+            // check the file times and suggest they might not be up to date if older than 1 day
+            FileInfo f = new FileInfo(meetFile);
+            if (f.LastWriteTime < DateTime.Now.AddDays(-1))
+            {
+                var result = MessageBox.Show("The DR export is older than 1 day, make sure you are archiving the latest copy of your data. Are you sure you want to continue?", "Data File Age Warning", MessageBoxButtons.YesNo);
+                if (result == DialogResult.No)
+                {
+                    this.Close();
+                }
+            }
+
             try
             {
                 meets = Meet.ParseMeets(meetFile);
@@ -111,6 +122,9 @@ namespace MeetArchiver
                 meetsList.Items.Add($"{meet.Title}       ({meet.StartDate} to {meet.EndDate})");
             }
 
+            InstructionLbl.Text = "Step 1: Select meet for archiving";
+
+
         }
 
         private void meetsList_SelectedIndexChanged(object sender, EventArgs e)
@@ -166,6 +180,10 @@ namespace MeetArchiver
                 typoList.Items.Add($"{diver.FullName}       [{diver.Born}]");
             }
             mismatchLbl.Text = $"Possible Mismatches ({typoList.Items.Count})";
+            if (mismatchedDivers.Count > 0)
+            {
+                typoList.BackColor = Color.Orange;
+            }
 
             newList.Items.Clear();
             foreach (var diver in newDivers)
@@ -173,6 +191,17 @@ namespace MeetArchiver
                 newList.Items.Add($"{diver.FullName}       [{diver.Born}]");
             }
             newLbl.Text = $"New Divers ({newList.Items.Count})";
+
+            if (mismatchedDivers.Count == 0)
+            {
+                typoList.BackColor = SystemColors.Window;
+                var result = MessageBox.Show("All Mismatched divers are now resolved, would you like to move onto fixing Club errors", "Diver cleansing complete", MessageBoxButtons.YesNo);
+                if (result == DialogResult.Yes)
+                {
+                    tabControl1.SelectedTab = clubsTab;
+                }
+            }
+
         }
 
         private void typoList_SelectedIndexChanged(object sender, EventArgs e)
@@ -185,7 +214,7 @@ namespace MeetArchiver
             RebuildDiverLists(checkedDivers);
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void CheckClubData(object sender, EventArgs e)
         {
             // find distinct clubs from local dataset
             List<Club> distinctClubs = new List<Club>();
@@ -205,6 +234,9 @@ namespace MeetArchiver
 
             mismatchedClubs = checkedClubs.Where(c => !c.Validated).ToList();
 
+            sugestedClubLst.Items.Clear();
+            searchClubLst.Items.Clear();
+            
             mismatchedClubsLst.Items.Clear();
             foreach (var club in mismatchedClubs)
             {
@@ -265,6 +297,7 @@ namespace MeetArchiver
                 // on the list of invalid clubs so leave it all as it is and updates/new will happes as they shold
 
             }
+            CheckClubData(null, null);
         }
 
         private void acceptSearchResultBtn_Click(object sender, EventArgs e)
@@ -286,13 +319,65 @@ namespace MeetArchiver
                 // on the list of invalid clubs so leave it all as it is and updates/new will happes as they shold
 
             }
+            CheckClubData(null, null);
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
+            logTxtBox.Clear();
+            logTxtBox.AppendText("Beginning Diver Processing...\n");
+            logTxtBox.AppendText($"Total Divers to process: {checkedDivers.Count} - {checkedDivers.Where(a => a.RecordStatus == RecordStatus.New).Count()} New Divers and {checkedDivers.Where(a => a.RecordStatus == RecordStatus.Updated).Count()} Updated Divers\n");
+            WorkingForm.Show("Updating Divers... Please wait");
             var t = Diver.ProcessDiversAsync(checkedDivers);
             t.Wait();
             var d = t.Result;
+            logTxtBox.AppendText("Running finlal validation on diver list.\n");
+            var t2 = Diver.CheckAthletesAsync(checkedDivers);
+            t2.Wait();
+            checkedDivers = t2.Result;
+            WorkingForm.Close();
+            if(checkedDivers.Where(a => a.RecordStatus == RecordStatus.New).Count() == 0
+                && checkedDivers.Where(a => a.RecordStatus == RecordStatus.Updated).Count() == 0
+                && checkedDivers.Where(a => a.RecordStatus == RecordStatus.PossibleMatches).Count() == 0)
+            {
+                logTxtBox.AppendText("All divers processed successfully with no errors.\n");
+            }
+            else
+            {
+                logTxtBox.AppendText("Some divers failed to process correctly. Please review the diver lists again.\n");
+                return;
+            }
+
+            logTxtBox.AppendText("Creating new meet.\n");
+            var t3 = Meet.AddMeetAsync(selectedMeet);
+            t3.Wait();
+            var newMeetRef = t3.Result;
+            logTxtBox.AppendText($"New meet created with MRef: {newMeetRef}\n");
+
+        }
+
+        private void Archiver_Load(object sender, EventArgs e)
+        {
+            loadDataToolStripMenuItem_Click(this, EventArgs.Empty);
+        }
+
+        private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (tabControl1.SelectedTab == clubsTab)
+            {
+                CheckClubData(sender, e);   
+                InstructionLbl.Text = "Step 3: Review the list of Mismatched clubs below. These clubs are in the local dataset but are similar to clubs found in the central database.";
+            }
+
+            if (tabControl1.SelectedTab == diversTab)
+            {
+                InstructionLbl.Text = "Step 2: Review the list of Mismatched divers below. These divers are in the local dataset but are similar to divers found in the central database.\nClick diver to edit.";
+            }
+
+            if (tabControl1.SelectedTab == uploadTab)
+            {
+                InstructionLbl.Text = "Step 4: Begin upload of the meet.";
+            }
         }
     }
 }

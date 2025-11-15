@@ -160,7 +160,7 @@ namespace DR_APIs.Controllers
                                 Born = @Born,
                                 Representing = @Representing,
                                 TCode = @TCode,
-                                CoachName = @Coach,
+                                Coach = @Coach,
                                 Nation = @Nation
                             WHERE DRef = @DRef;";
 
@@ -170,10 +170,10 @@ namespace DR_APIs.Controllers
                 cmd.Parameters.AddWithValue("@LastName", (object?)diver.LastName ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@Sex", (object?)diver.Sex ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@Born", diver.Born.HasValue ? (object)diver.Born.Value : DBNull.Value);
-                cmd.Parameters.AddWithValue("@Representing", (object?)diver.Representing ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@Representing", (object?)diver.Representing ?? "");
                 cmd.Parameters.AddWithValue("@TCode", (object?)diver.TCode ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@Coach", (object?)diver.Coach ?? DBNull.Value);
-                cmd.Parameters.AddWithValue("@Nation", (object?)diver.Nation ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@Coach", (object?)diver.Coach ?? "");
+                cmd.Parameters.AddWithValue("@Nation", (object?)diver.Nation ?? "");
                 cmd.Parameters.AddWithValue("@DRef", diver.ArchiveID.Value);
 
                 int rows = cmd.ExecuteNonQuery();
@@ -211,9 +211,9 @@ namespace DR_APIs.Controllers
 
                 // Insert using parameterized query. Columns chosen to match available Diver properties.
                 var sql = @"INSERT INTO me_divers
-                            (FirstName, LastName, Sex, Born, Representing, TCode, Coach, Nation)
+                            (FirstName, LastName, Sex, Born, Representing, TCode, Coach, Nation, InsertDT)
                             VALUES
-                            (@FirstName, @LastName, @Sex, @Born, @Representing, @TCode, @Coach, @Nation);";
+                            (@FirstName, @LastName, @Sex, @Born, @Representing, @TCode, @Coach, @Nation, @InsertDT);";
 
                 using var cmd = new MySqlCommand(sql, conn);
 
@@ -226,6 +226,8 @@ namespace DR_APIs.Controllers
                 cmd.Parameters.AddWithValue("@TCode", (object?)diver.TCode ?? "");
                 cmd.Parameters.AddWithValue("@Coach", (object?)diver.Coach ?? "");
                 cmd.Parameters.AddWithValue("@Nation", (object?)diver.Nation ?? "");
+                cmd.Parameters.AddWithValue("@InsertDT", DateTime.Now);
+
 
                 cmd.ExecuteNonQuery();
 
