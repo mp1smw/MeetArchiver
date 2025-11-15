@@ -32,9 +32,9 @@
             label2 = new Label();
             matchLst = new ListBox();
             label3 = new Label();
-            button1 = new Button();
-            button2 = new Button();
-            button3 = new Button();
+            takeMatchBtn = new Button();
+            overwriteDiverBtn = new Button();
+            createDiverBtn = new Button();
             label4 = new Label();
             SuspendLayout();
             // 
@@ -75,36 +75,39 @@
             label3.TabIndex = 3;
             label3.Text = "Possible matches";
             // 
-            // button1
+            // takeMatchBtn
             // 
-            button1.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            button1.Location = new Point(412, 186);
-            button1.Name = "button1";
-            button1.Size = new Size(177, 29);
-            button1.TabIndex = 4;
-            button1.Text = "<<     Take archive diver";
-            button1.UseVisualStyleBackColor = true;
+            takeMatchBtn.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            takeMatchBtn.Location = new Point(412, 186);
+            takeMatchBtn.Name = "takeMatchBtn";
+            takeMatchBtn.Size = new Size(177, 29);
+            takeMatchBtn.TabIndex = 4;
+            takeMatchBtn.Text = "<<     Take archive diver";
+            takeMatchBtn.UseVisualStyleBackColor = true;
+            takeMatchBtn.Click += takeMatchBtn_Click;
             // 
-            // button2
+            // overwriteDiverBtn
             // 
-            button2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            button2.Location = new Point(412, 221);
-            button2.Name = "button2";
-            button2.Size = new Size(177, 29);
-            button2.TabIndex = 5;
-            button2.Text = "Overwrite archive diver   >>";
-            button2.UseVisualStyleBackColor = true;
+            overwriteDiverBtn.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            overwriteDiverBtn.Location = new Point(412, 221);
+            overwriteDiverBtn.Name = "overwriteDiverBtn";
+            overwriteDiverBtn.Size = new Size(177, 29);
+            overwriteDiverBtn.TabIndex = 5;
+            overwriteDiverBtn.Text = "Overwrite archive diver   >>";
+            overwriteDiverBtn.UseVisualStyleBackColor = true;
+            overwriteDiverBtn.Click += overwriteDiverBtn_Click;
             // 
-            // button3
+            // createDiverBtn
             // 
-            button3.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            button3.Location = new Point(412, 301);
-            button3.Name = "button3";
-            button3.Size = new Size(177, 29);
-            button3.TabIndex = 6;
-            button3.TabStop = false;
-            button3.Text = "Create new diver";
-            button3.UseVisualStyleBackColor = true;
+            createDiverBtn.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            createDiverBtn.Location = new Point(412, 301);
+            createDiverBtn.Name = "createDiverBtn";
+            createDiverBtn.Size = new Size(177, 29);
+            createDiverBtn.TabIndex = 6;
+            createDiverBtn.TabStop = false;
+            createDiverBtn.Text = "Create new diver";
+            createDiverBtn.UseVisualStyleBackColor = true;
+            createDiverBtn.Click += createDiverBtn_Click;
             // 
             // label4
             // 
@@ -121,9 +124,9 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(993, 342);
             Controls.Add(label4);
-            Controls.Add(button3);
-            Controls.Add(button2);
-            Controls.Add(button1);
+            Controls.Add(createDiverBtn);
+            Controls.Add(overwriteDiverBtn);
+            Controls.Add(takeMatchBtn);
             Controls.Add(label3);
             Controls.Add(matchLst);
             Controls.Add(label2);
@@ -141,9 +144,9 @@
         private Label label2;
         private ListBox matchLst;
         private Label label3;
-        private Button button1;
-        private Button button2;
-        private Button button3;
+        private Button takeMatchBtn;
+        private Button overwriteDiverBtn;
+        private Button createDiverBtn;
         private Label label4;
     }
 }

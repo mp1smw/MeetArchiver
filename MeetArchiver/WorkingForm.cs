@@ -171,7 +171,7 @@ namespace MeetArchiver
                     var t = s_thread;
                     if (t != null && t.IsAlive)
                     {
-                        t.Join(2000);
+                        t.Join(200);
                     }
                     s_instance = null;
                     s_thread = null;

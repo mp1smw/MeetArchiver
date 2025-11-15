@@ -22,7 +22,7 @@ namespace DR_APIs.Controllers
         }
 
         [HttpGet("GetDiver")]
-        public IEnumerable<Diver> GetDiver(string FirstName, string LastName, int Born)
+        public IEnumerable<Diver> GetDiver(string FirstName, string LastName, int Born, string Sex)
         {
             bool needsClosing = false;
             if (conn.State != ConnectionState.Open)
@@ -56,7 +56,7 @@ namespace DR_APIs.Controllers
                 diver.Born = Convert.ToInt32(row["Born"]);
                 diver.Representing = row["Representing"].ToString();
                 diver.TCode = row["TCode"].ToString();
-                diver.Validated = true;
+                diver.RecordStatus = RecordStatus.Valid;
                 divers.Add(diver);
             }
 
@@ -69,14 +69,15 @@ namespace DR_APIs.Controllers
             }
 
             // didnlt find a unique match, try soundex
-            sql = "SELECT * FROM me_divers WHERE soundex(@FirstName) = soundex(FirstName) " +
+            sql = "SELECT * FROM me_divers WHERE (soundex(@FirstName) = soundex(FirstName) " +
                 "AND soundex(LastName) = soundex(@LastName) " +
-                "AND Born>=(@Born-1) AND Born<=(@Born+1);";
+                "AND Born>=(@Born-1) AND Born<=(@Born+1)) OR (LastName=@LastName AND Born=@Born AND Sex=@Sex);";
 
             cmd = new MySqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@FirstName", FirstName);
             cmd.Parameters.AddWithValue("@LastName", LastName);
             cmd.Parameters.AddWithValue("@Born", Born);
+            cmd.Parameters.AddWithValue("@Sex", Sex);
 
             dt = new DataTable();
 
@@ -109,17 +110,21 @@ namespace DR_APIs.Controllers
             for (int i=0; i<divers.Count();i++)
             {
                 
-                var matches = GetDiver(divers[i].FirstName, divers[i].LastName, divers[i].Born ?? 0).ToList();
-                if (matches.Count() == 1 && matches[0].Validated)
+                var matches = GetDiver(divers[i].FirstName, divers[i].LastName, divers[i].Born ?? 0, divers[i].Sex).ToList();
+                if (matches.Count() == 1 && matches[0].RecordStatus== RecordStatus.Valid)
                 {
                     int id = divers[i].ID; // copy local ID
                     divers[i] = matches[0];
                     divers[i].ID = id;  // restore local ID
                 }
+                else if(matches.Count() == 0)
+                {
+                    divers[i].RecordStatus = RecordStatus.New;
+                }
                 else
                 {
+                    divers[i].RecordStatus = RecordStatus.PossibleMatches;
                     divers[i].PossibleMatches = matches;
-                    divers[i].Validated = false;
                 }
 
             }

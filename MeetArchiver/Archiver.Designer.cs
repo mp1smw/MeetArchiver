@@ -44,7 +44,18 @@
             missingList = new ListBox();
             matchedList = new ListBox();
             clubsTab = new TabPage();
+            findBtn = new Button();
+            searchTxt = new TextBox();
+            searchClubLst = new ListBox();
+            acceptSearchResultBtn = new Button();
+            sugestedClubLst = new ListBox();
+            acceptSuggestionBtn = new Button();
+            button1 = new Button();
+            mismatchedClubsLst = new ListBox();
+            label1 = new Label();
             uploadTab = new TabPage();
+            groupBox1 = new GroupBox();
+            groupBox2 = new GroupBox();
             menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel2.SuspendLayout();
@@ -52,6 +63,7 @@
             tabControl1.SuspendLayout();
             meetTab.SuspendLayout();
             diversTab.SuspendLayout();
+            clubsTab.SuspendLayout();
             SuspendLayout();
             // 
             // menuStrip1
@@ -211,12 +223,107 @@
             // 
             // clubsTab
             // 
+            clubsTab.Controls.Add(findBtn);
+            clubsTab.Controls.Add(searchTxt);
+            clubsTab.Controls.Add(searchClubLst);
+            clubsTab.Controls.Add(acceptSearchResultBtn);
+            clubsTab.Controls.Add(sugestedClubLst);
+            clubsTab.Controls.Add(acceptSuggestionBtn);
+            clubsTab.Controls.Add(button1);
+            clubsTab.Controls.Add(mismatchedClubsLst);
+            clubsTab.Controls.Add(label1);
+            clubsTab.Controls.Add(groupBox1);
+            clubsTab.Controls.Add(groupBox2);
             clubsTab.Location = new Point(4, 24);
             clubsTab.Name = "clubsTab";
             clubsTab.Size = new Size(1114, 521);
             clubsTab.TabIndex = 2;
             clubsTab.Text = "Clubs";
             clubsTab.UseVisualStyleBackColor = true;
+            // 
+            // findBtn
+            // 
+            findBtn.Location = new Point(574, 269);
+            findBtn.Name = "findBtn";
+            findBtn.Size = new Size(75, 23);
+            findBtn.TabIndex = 11;
+            findBtn.Text = "Find";
+            findBtn.UseVisualStyleBackColor = true;
+            findBtn.Click += findBtn_Click;
+            // 
+            // searchTxt
+            // 
+            searchTxt.Location = new Point(332, 269);
+            searchTxt.Name = "searchTxt";
+            searchTxt.Size = new Size(222, 23);
+            searchTxt.TabIndex = 10;
+            // 
+            // searchClubLst
+            // 
+            searchClubLst.FormattingEnabled = true;
+            searchClubLst.ItemHeight = 15;
+            searchClubLst.Location = new Point(332, 312);
+            searchClubLst.Name = "searchClubLst";
+            searchClubLst.Size = new Size(222, 94);
+            searchClubLst.TabIndex = 9;
+            // 
+            // acceptSearchResultBtn
+            // 
+            acceptSearchResultBtn.Location = new Point(574, 312);
+            acceptSearchResultBtn.Name = "acceptSearchResultBtn";
+            acceptSearchResultBtn.Size = new Size(75, 23);
+            acceptSearchResultBtn.TabIndex = 8;
+            acceptSearchResultBtn.Text = "Accept";
+            acceptSearchResultBtn.UseVisualStyleBackColor = true;
+            acceptSearchResultBtn.Click += acceptSearchResultBtn_Click;
+            // 
+            // sugestedClubLst
+            // 
+            sugestedClubLst.FormattingEnabled = true;
+            sugestedClubLst.ItemHeight = 15;
+            sugestedClubLst.Location = new Point(332, 49);
+            sugestedClubLst.Name = "sugestedClubLst";
+            sugestedClubLst.Size = new Size(222, 94);
+            sugestedClubLst.TabIndex = 6;
+            // 
+            // acceptSuggestionBtn
+            // 
+            acceptSuggestionBtn.Location = new Point(574, 49);
+            acceptSuggestionBtn.Name = "acceptSuggestionBtn";
+            acceptSuggestionBtn.Size = new Size(75, 23);
+            acceptSuggestionBtn.TabIndex = 5;
+            acceptSuggestionBtn.Text = "Accept";
+            acceptSuggestionBtn.UseVisualStyleBackColor = true;
+            acceptSuggestionBtn.Click += acceptSuggestionBtn_Click;
+            // 
+            // button1
+            // 
+            button1.Location = new Point(133, 11);
+            button1.Name = "button1";
+            button1.Size = new Size(75, 23);
+            button1.TabIndex = 2;
+            button1.Text = "button1";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
+            // 
+            // mismatchedClubsLst
+            // 
+            mismatchedClubsLst.FormattingEnabled = true;
+            mismatchedClubsLst.ItemHeight = 15;
+            mismatchedClubsLst.Location = new Point(12, 40);
+            mismatchedClubsLst.Name = "mismatchedClubsLst";
+            mismatchedClubsLst.Size = new Size(222, 394);
+            mismatchedClubsLst.TabIndex = 1;
+            mismatchedClubsLst.SelectedIndexChanged += mismatchedClubsLst_SelectedIndexChanged;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(8, 14);
+            label1.Name = "label1";
+            label1.Size = new Size(93, 15);
+            label1.TabIndex = 0;
+            label1.Text = "Clubs not found";
             // 
             // uploadTab
             // 
@@ -226,6 +333,24 @@
             uploadTab.TabIndex = 3;
             uploadTab.Text = "Upload";
             uploadTab.UseVisualStyleBackColor = true;
+            // 
+            // groupBox1
+            // 
+            groupBox1.Location = new Point(316, 225);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Size = new Size(360, 206);
+            groupBox1.TabIndex = 12;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "Manual club search";
+            // 
+            // groupBox2
+            // 
+            groupBox2.Location = new Point(316, 25);
+            groupBox2.Name = "groupBox2";
+            groupBox2.Size = new Size(362, 134);
+            groupBox2.TabIndex = 13;
+            groupBox2.TabStop = false;
+            groupBox2.Text = "Suggested clubs";
             // 
             // Archiver
             // 
@@ -246,6 +371,8 @@
             meetTab.ResumeLayout(false);
             diversTab.ResumeLayout(false);
             diversTab.PerformLayout();
+            clubsTab.ResumeLayout(false);
+            clubsTab.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -269,5 +396,16 @@
         private Label mismatchLbl;
         private Label matchedLbl;
         private Label withdrawnLbl;
+        private ListBox mismatchedClubsLst;
+        private Label label1;
+        private Button button1;
+        private ListBox sugestedClubLst;
+        private Button acceptSuggestionBtn;
+        private ListBox searchClubLst;
+        private Button acceptSearchResultBtn;
+        private Button findBtn;
+        private TextBox searchTxt;
+        private GroupBox groupBox1;
+        private GroupBox groupBox2;
     }
 }

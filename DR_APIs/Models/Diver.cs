@@ -5,6 +5,8 @@ using System.Reflection;
 
 namespace DR_APIs.Models
 {
+
+    public enum RecordStatus { Unassigned, Valid, PossibleMatches, New, Updated};
     public class Diver
     {
         public int ID { get; set; }
@@ -34,7 +36,7 @@ namespace DR_APIs.Models
         // Convenience property
         public string FullName => string.Join(' ', new[] { FirstName, LastName }.Where(s => !string.IsNullOrWhiteSpace(s)));
 
-        public bool Validated { get; set; }
+        public RecordStatus RecordStatus { get; set; }
 
         public List<Diver>  PossibleMatches{ get; set; }
 
@@ -99,7 +101,7 @@ namespace DR_APIs.Models
 
                     // Ensure lists are initialized to avoid null references elsewhere
                     d.PossibleMatches = new List<Diver>();
-                    d.Validated = false;
+                    //d.Validated = false;
 
                     divers.Add(d);
                 }
