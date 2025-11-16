@@ -14,10 +14,15 @@
     <Compile Include="..\DR_APIs\Models\DiveSheet.cs" Link="ModelsLinked\DiveSheet.cs" />
     <Compile Include="..\DR_APIs\Models\Event.cs" Link="ModelsLinked\Event.cs" />
     <Compile Include="..\DR_APIs\Models\Meet.cs" Link="ModelsLinked\Meet.cs" />
+    <Compile Include="..\DR_APIs\Models\User.cs" Link="ModelsLinked\User.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="ModelsLinked\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
   </ItemGroup>
 
   <ItemGroup>

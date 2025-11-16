@@ -52,6 +52,7 @@ namespace MeetArchiver
                 if (result == DialogResult.No)
                 {
                     this.Close();
+                    return;
                 }
             }
 
@@ -243,6 +244,19 @@ namespace MeetArchiver
                 mismatchedClubsLst.Items.Add($"{club.Representing}       [{club.TCode}]");
             }
             mismatchedClubsLst.Tag = mismatchedClubs;
+            if (mismatchedClubs.Count == 0)
+            {
+                mismatchedClubsLst.BackColor = Color.White;
+                var result = MessageBox.Show("All club mismatches are now resolved, would you like to move onto uploading the meet", "Club cleansing complete", MessageBoxButtons.YesNo);
+                if (result == DialogResult.Yes)
+                {
+                    tabControl1.SelectedTab = uploadTab;
+                }
+            }
+            else
+            {
+                mismatchedClubsLst.BackColor = Color.Orange;
+            }
         }
 
         private void mismatchedClubsLst_SelectedIndexChanged(object sender, EventArgs e)
@@ -322,7 +336,7 @@ namespace MeetArchiver
             CheckClubData(null, null);
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void ArchiveEventNow(object sender, EventArgs e)
         {
             logTxtBox.Clear();
             logTxtBox.AppendText("Beginning Diver Processing...\n");
@@ -358,6 +372,32 @@ namespace MeetArchiver
 
         private void Archiver_Load(object sender, EventArgs e)
         {
+
+            // lets validate their key first, no pint going any further if we can't
+            string apikey = "";
+            using var f = new AuthForm(); 
+            if (f.ShowDialog(this) == DialogResult.OK) 
+            { 
+                apikey = f.EnteredPassword; /* use pw */ 
+            
+            }
+            else
+            {
+                this.Close();
+                return;
+            }
+
+            var t=User.GetUserAsync(apikey);
+            t.Wait();
+            var user = t.Result;
+
+            if(user.Role == null || (user.Role != "Admin" && user.Role != "DataManager"))
+            {
+                MessageBox.Show("You do not have sufficient privileges to use the Meet Archiver. Please contact your system administrator.");
+                this.Close();
+                return;
+            }
+
             loadDataToolStripMenuItem_Click(this, EventArgs.Empty);
         }
 
@@ -376,6 +416,8 @@ namespace MeetArchiver
 
             if (tabControl1.SelectedTab == uploadTab)
             {
+                // Set location for nation combo box
+                nationCmb.Text = Program.CountryCode;
                 InstructionLbl.Text = "Step 4: Begin upload of the meet.";
             }
         }

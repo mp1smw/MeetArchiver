@@ -4,6 +4,9 @@
     <Compile Update="Archiver.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="AuthForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="Controls\DiverCtrl.cs">
       <SubType>UserControl</SubType>
     </Compile>

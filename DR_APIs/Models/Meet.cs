@@ -188,5 +188,39 @@ namespace DR_APIs.Models
 
             return -1;
         }
+
+        /// <summary>
+        /// Call the REST service /Meet/GetByGuid and return the Meet if found, or null if not found.
+        /// Throws HttpRequestException for non-success (non-404) responses.
+        /// </summary>
+        public static async Task<Meet?> GetByGuidAsync(string meetGuid, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrWhiteSpace(meetGuid)) throw new ArgumentNullException(nameof(meetGuid));
+
+            var httpClientHandler = new HttpClientHandler();
+            httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => true;
+
+            var baseUrl = Environment.GetEnvironmentVariable("API_BASE_URL") ?? "https://localhost:7034";
+            var requestUri = $"{baseUrl.TrimEnd('/')}/Meet/GetByGuid?meetGuid={Uri.EscapeDataString(meetGuid)}";
+
+            var jsonOptions = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            using var client = new HttpClient(httpClientHandler);
+            using var response = await client.GetAsync(requestUri, cancellationToken).ConfigureAwait(false);
+
+            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                return null;
+
+            response.EnsureSuccessStatusCode();
+
+            var responseJson = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+            if (string.IsNullOrWhiteSpace(responseJson)) return null;
+
+            var meet = JsonSerializer.Deserialize<Meet>(responseJson, jsonOptions);
+            return meet;
+        }
     }
 }
