@@ -251,8 +251,8 @@ namespace DR_APIs.Controllers
             }
         }
 
-        [HttpPost("ProcessDivers")]
-        public IEnumerable<Diver> ProcessDivers(List<Diver> divers)
+        [HttpPost("UpdateDivers")]
+        public IEnumerable<Diver> UpdateDivers(List<Diver> divers)
         {
             conn.Open();
             for (int i = 0; i < divers.Count(); i++)

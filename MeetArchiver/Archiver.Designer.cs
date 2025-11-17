@@ -55,14 +55,14 @@
             groupBox1 = new GroupBox();
             groupBox2 = new GroupBox();
             uploadTab = new TabPage();
+            textBox1 = new TextBox();
+            internationalDescriptionTxt = new TextBox();
             checkBox1 = new CheckBox();
             label3 = new Label();
             nationCmb = new ComboBox();
             label2 = new Label();
             logTxtBox = new RichTextBox();
             button2 = new Button();
-            internationalDescriptionTxt = new TextBox();
-            textBox1 = new TextBox();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -367,6 +367,28 @@
             uploadTab.Text = "Upload";
             uploadTab.UseVisualStyleBackColor = true;
             // 
+            // textBox1
+            // 
+            textBox1.BackColor = Color.MistyRose;
+            textBox1.BorderStyle = BorderStyle.None;
+            textBox1.Location = new Point(777, 147);
+            textBox1.Multiline = true;
+            textBox1.Name = "textBox1";
+            textBox1.Size = new Size(242, 68);
+            textBox1.TabIndex = 7;
+            textBox1.Text = "This is the country the meet took place in, it is auto selected on your current location please change if you are not where the meet took place";
+            // 
+            // internationalDescriptionTxt
+            // 
+            internationalDescriptionTxt.BackColor = Color.MistyRose;
+            internationalDescriptionTxt.BorderStyle = BorderStyle.None;
+            internationalDescriptionTxt.Location = new Point(777, 39);
+            internationalDescriptionTxt.Multiline = true;
+            internationalDescriptionTxt.Name = "internationalDescriptionTxt";
+            internationalDescriptionTxt.Size = new Size(242, 68);
+            internationalDescriptionTxt.TabIndex = 6;
+            internationalDescriptionTxt.Text = "Only select this option if all participant are representing their country, it will display their nation rather than their club  in the  results section";
+            // 
             // checkBox1
             // 
             checkBox1.AutoSize = true;
@@ -397,6 +419,7 @@
             nationCmb.Name = "nationCmb";
             nationCmb.Size = new Size(121, 23);
             nationCmb.TabIndex = 3;
+            nationCmb.SelectedIndexChanged += nationCmb_SelectedIndexChanged;
             // 
             // label2
             // 
@@ -424,28 +447,6 @@
             button2.Text = "Archive Meet";
             button2.UseVisualStyleBackColor = true;
             button2.Click += ArchiveEventNow;
-            // 
-            // internationalDescriptionTxt
-            // 
-            internationalDescriptionTxt.BackColor = Color.MistyRose;
-            internationalDescriptionTxt.BorderStyle = BorderStyle.None;
-            internationalDescriptionTxt.Location = new Point(777, 39);
-            internationalDescriptionTxt.Multiline = true;
-            internationalDescriptionTxt.Name = "internationalDescriptionTxt";
-            internationalDescriptionTxt.Size = new Size(242, 68);
-            internationalDescriptionTxt.TabIndex = 6;
-            internationalDescriptionTxt.Text = "Only select this option if all participant are representing their country, it will display their nation rather than their club  in the  results section";
-            // 
-            // textBox1
-            // 
-            textBox1.BackColor = Color.MistyRose;
-            textBox1.BorderStyle = BorderStyle.None;
-            textBox1.Location = new Point(777, 147);
-            textBox1.Multiline = true;
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(242, 68);
-            textBox1.TabIndex = 7;
-            textBox1.Text = "This is the country the meet took place in, it is auto selected on your current location please change if you are not where the meet took place";
             // 
             // Archiver
             // 

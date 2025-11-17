@@ -237,7 +237,7 @@ namespace MeetArchiver
 
             sugestedClubLst.Items.Clear();
             searchClubLst.Items.Clear();
-            
+
             mismatchedClubsLst.Items.Clear();
             foreach (var club in mismatchedClubs)
             {
@@ -342,7 +342,7 @@ namespace MeetArchiver
             logTxtBox.AppendText("Beginning Diver Processing...\n");
             logTxtBox.AppendText($"Total Divers to process: {checkedDivers.Count} - {checkedDivers.Where(a => a.RecordStatus == RecordStatus.New).Count()} New Divers and {checkedDivers.Where(a => a.RecordStatus == RecordStatus.Updated).Count()} Updated Divers\n");
             WorkingForm.Show("Updating Divers... Please wait");
-            var t = Diver.ProcessDiversAsync(checkedDivers);
+            var t = Diver.UpdateDiversAsync(checkedDivers);
             t.Wait();
             var d = t.Result;
             logTxtBox.AppendText("Running finlal validation on diver list.\n");
@@ -350,7 +350,7 @@ namespace MeetArchiver
             t2.Wait();
             checkedDivers = t2.Result;
             WorkingForm.Close();
-            if(checkedDivers.Where(a => a.RecordStatus == RecordStatus.New).Count() == 0
+            if (checkedDivers.Where(a => a.RecordStatus == RecordStatus.New).Count() == 0
                 && checkedDivers.Where(a => a.RecordStatus == RecordStatus.Updated).Count() == 0
                 && checkedDivers.Where(a => a.RecordStatus == RecordStatus.PossibleMatches).Count() == 0)
             {
@@ -362,11 +362,50 @@ namespace MeetArchiver
                 return;
             }
 
+            // check if meet already exists
+            var t4 = Meet.GetByGuidAsync(selectedMeet.MeetGUID);
+            t4.Wait();
+            var existingMeet = t4.Result;
+            if (existingMeet != null)
+            {
+                logTxtBox.AppendText($"A meet with the same GUID already exists in the central database (MRef: {existingMeet.MRef}). Aborting upload to prevent duplicates.\n");
+                var result = MessageBox.Show("Meet alreay exists. Do you want to proceed with deleting the meet from the central database so you can republish it?", "Confirm Meet Delete", MessageBoxButtons.YesNo);
+                if (result == DialogResult.No)
+                {
+                    logTxtBox.AppendText("Meet upload aborted by user.\n");
+                    return;
+                }
+                // delete meet
+                var t5 = Meet.DeleteByGuidAsync(existingMeet.MeetGUID);
+                t5.Wait();
+                int res = t5.Result;
+                logTxtBox.AppendText($"Existing meet with MRef: {existingMeet.MRef} deleted from central database.\n");
+
+            }
+
             logTxtBox.AppendText("Creating new meet.\n");
             var t3 = Meet.AddMeetAsync(selectedMeet);
             t3.Wait();
             var newMeetRef = t3.Result;
             logTxtBox.AppendText($"New meet created with MRef: {newMeetRef}\n");
+
+            // now we want to update the events and divesheets with the correct MRef IDs
+            foreach(Event ev in selectedEvents)
+            {
+                ev.MeetRef = newMeetRef;
+            }
+
+            foreach(DiveSheet ds in selectedDiveSheets)
+            {
+                ds.Meet = newMeetRef; // should be the same but just to be sure
+            }
+            logTxtBox.AppendText($"Events and DiveSheets updated with new MeetRef\n");
+
+            var t6 = Event.AddEventsAsync(selectedEvents);
+            t6.Wait();
+            var eventRet = t6.Result;
+
+
 
         }
 
@@ -375,11 +414,11 @@ namespace MeetArchiver
 
             // lets validate their key first, no pint going any further if we can't
             string apikey = "";
-            using var f = new AuthForm(); 
-            if (f.ShowDialog(this) == DialogResult.OK) 
-            { 
-                apikey = f.EnteredPassword; /* use pw */ 
-            
+            using var f = new AuthForm();
+            if (f.ShowDialog(this) == DialogResult.OK)
+            {
+                apikey = f.EnteredPassword; /* use pw */
+
             }
             else
             {
@@ -387,16 +426,17 @@ namespace MeetArchiver
                 return;
             }
 
-            var t=User.GetUserAsync(apikey);
+            var t = User.GetUserAsync(apikey);
             t.Wait();
             var user = t.Result;
 
-            if(user.Role == null || (user.Role != "Admin" && user.Role != "DataManager"))
+            if (user.Role == null || (user.Role != "Admin" && user.Role != "DataManager"))
             {
                 MessageBox.Show("You do not have sufficient privileges to use the Meet Archiver. Please contact your system administrator.");
                 this.Close();
                 return;
             }
+            Program.CurrentUser = user; // squirel this away in Program for later use
 
             loadDataToolStripMenuItem_Click(this, EventArgs.Empty);
         }
@@ -405,7 +445,7 @@ namespace MeetArchiver
         {
             if (tabControl1.SelectedTab == clubsTab)
             {
-                CheckClubData(sender, e);   
+                CheckClubData(sender, e);
                 InstructionLbl.Text = "Step 3: Review the list of Mismatched clubs below. These clubs are in the local dataset but are similar to clubs found in the central database.";
             }
 
@@ -420,6 +460,11 @@ namespace MeetArchiver
                 nationCmb.Text = Program.CountryCode;
                 InstructionLbl.Text = "Step 4: Begin upload of the meet.";
             }
+        }
+
+        private void nationCmb_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            selectedMeet.Nation = nationCmb.Text;
         }
     }
 }

@@ -189,7 +189,7 @@ namespace DR_APIs.Models
             return result ?? new List<Diver>();
         }
 
-        public static async Task<List<Diver>> ProcessDiversAsync(List<Diver> divers, System.Threading.CancellationToken cancellationToken = default)
+        public static async Task<List<Diver>> UpdateDiversAsync(List<Diver> divers, System.Threading.CancellationToken cancellationToken = default)
         {
             var httpClientHandler = new HttpClientHandler();
             httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) =>

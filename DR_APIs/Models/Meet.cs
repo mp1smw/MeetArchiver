@@ -1,12 +1,13 @@
-﻿using System;
+﻿using Microsoft.VisualBasic.FileIO;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
+using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.VisualBasic.FileIO;
 
 namespace DR_APIs.Models
 {
@@ -221,6 +222,57 @@ namespace DR_APIs.Models
 
             var meet = JsonSerializer.Deserialize<Meet>(responseJson, jsonOptions);
             return meet;
+        }
+
+        /// <summary>
+        /// Call the REST service /Meet/DeleteByGuid to remove a meet (and related events/divesheets).
+        /// Returns the number of meet rows deleted (as returned by the API), returns 0 if the meet was not found,
+        /// or -1 on error/unparseable response.
+        /// </summary>
+        public static async Task<int> DeleteByGuidAsync(string meetGuid, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrWhiteSpace(meetGuid)) throw new ArgumentNullException(nameof(meetGuid));
+
+            var httpClientHandler = new HttpClientHandler();
+            httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => true;
+
+            var baseUrl = Environment.GetEnvironmentVariable("API_BASE_URL") ?? "https://localhost:7034";
+            var requestUri = $"{baseUrl.TrimEnd('/')}/Meet/DeleteByGuid?meetGuid={Uri.EscapeDataString(meetGuid)}";
+
+            var jsonOptions = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            using var client = new HttpClient(httpClientHandler);
+            using var request = new HttpRequestMessage(HttpMethod.Delete, requestUri);
+            using var response = await client.SendAsync(request, cancellationToken).ConfigureAwait(false);
+
+            if (response.StatusCode == HttpStatusCode.NotFound)
+                return 0;
+
+            response.EnsureSuccessStatusCode();
+
+            var responseJson = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+            if (string.IsNullOrWhiteSpace(responseJson)) return -1;
+
+            try
+            {
+                var value = JsonSerializer.Deserialize<int>(responseJson, jsonOptions);
+                if (value != 0 || responseJson.Trim().Trim('"') == "0")
+                    return value;
+            }
+            catch
+            {
+                // try plain parse
+            }
+
+            if (int.TryParse(responseJson.Trim().Trim('"'), out var parsed))
+            {
+                return parsed;
+            }
+
+            return -1;
         }
     }
 }

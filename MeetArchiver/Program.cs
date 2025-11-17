@@ -1,3 +1,5 @@
+using DR_APIs.Models;
+
 namespace MeetArchiver
 {
     internal static class Program
@@ -8,6 +10,7 @@ namespace MeetArchiver
         /// 
 
         public static String CountryCode;
+        public static User CurrentUser;
 
         [STAThread]
         static void Main()

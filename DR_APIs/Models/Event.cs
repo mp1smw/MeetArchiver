@@ -1,5 +1,7 @@
 ﻿using Microsoft.VisualBasic.FileIO;
 using System.Globalization;
+using System.Text;
+using System.Text.Json;
 
 namespace DR_APIs.Models
 {
@@ -57,7 +59,7 @@ namespace DR_APIs.Models
         public decimal? MaxHeight { get; set; }
 
         public int? RunningOrder { get; set; }
-        public int? Placed { get; set; }
+        public bool? Placed { get; set; }
 
         public bool? AutoDD { get; set; }
 
@@ -80,9 +82,9 @@ namespace DR_APIs.Models
         public int? SecsPerDive { get; set; }
         public bool? DoNotRank { get; set; }
         public bool? TeamEvent { get; set; }
-    
 
-    /// <summary>
+
+        /// <summary>
         /// Parse a CSV file (with header) into a list of <see cref="Event"/>.
         /// Header names expected (case-insensitive): 
         /// "MeetRef","EventRef","EDate","ETitle","ESex","Board","S1Dives","S1DD","S1Groups",
@@ -168,7 +170,7 @@ namespace DR_APIs.Models
                     ev.MaxHeight = ParseNullableDecimal(GetField("MaxHeight"));
 
                     ev.RunningOrder = ParseNullableInt(GetField("RunningOrder"));
-                    ev.Placed = ParseNullableInt(GetField("Placed"));
+                    ev.Placed = ParseNullableBool(GetField("Placed"));
 
                     ev.AutoDD = ParseNullableBool(GetField("AutoDD"));
 
@@ -268,6 +270,98 @@ namespace DR_APIs.Models
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Call the REST service /Event/AddEvent to insert an Event for this meet.
+        /// Returns the newly created event id (ERef) on success, -1 on error.
+        /// </summary>
+        public static async Task<int> AddEventAsync(Event ev, CancellationToken cancellationToken = default)
+        {
+            if (ev is null) throw new ArgumentNullException(nameof(ev));
+
+            var httpClientHandler = new HttpClientHandler();
+            httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => true;
+
+            var baseUrl = Environment.GetEnvironmentVariable("API_BASE_URL") ?? "https://localhost:7034";
+            var requestUri = $"{baseUrl.TrimEnd('/')}/Event/AddEvent";
+
+            var jsonOptions = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            var json = JsonSerializer.Serialize(ev, jsonOptions);
+
+            using var client = new HttpClient(httpClientHandler);
+            using var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            using var response = await client.PostAsync(requestUri, content, cancellationToken).ConfigureAwait(false);
+            var responseJson = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+
+            if (string.IsNullOrWhiteSpace(responseJson)) return -1;
+
+            try
+            {
+                var id = JsonSerializer.Deserialize<int>(responseJson, jsonOptions);
+                if (id != 0)
+                {
+                    return id;
+                }
+            }
+            catch
+            {
+                // ignore
+            }
+
+            return -1;
+        }
+
+
+        /// <summary>
+        /// Call the REST service /Event/AddEvent to insert an Event for this meet.
+        /// Returns the newly created event id (ERef) on success, -1 on error.
+        /// </summary>
+        public static async Task<int> AddEventsAsync(List<Event> ev, CancellationToken cancellationToken = default)
+        {
+            if (ev is null) throw new ArgumentNullException(nameof(ev));
+
+            var httpClientHandler = new HttpClientHandler();
+            httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) => true;
+
+            var baseUrl = Environment.GetEnvironmentVariable("API_BASE_URL") ?? "https://localhost:7034";
+            var requestUri = $"{baseUrl.TrimEnd('/')}/Event/AddEvents";
+
+            var jsonOptions = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            var json = JsonSerializer.Serialize(ev, jsonOptions);
+
+            using var client = new HttpClient(httpClientHandler);
+            using var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            using var response = await client.PostAsync(requestUri, content, cancellationToken).ConfigureAwait(false);
+            var responseJson = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+
+            if (string.IsNullOrWhiteSpace(responseJson)) return -1;
+
+            try
+            {
+                var id = JsonSerializer.Deserialize<int>(responseJson, jsonOptions);
+                if (id != 0)
+                {
+                    return id;
+                }
+            }
+            catch
+            {
+                // ignore
+            }
+
+            return -1;
+
         }
     }
 }
