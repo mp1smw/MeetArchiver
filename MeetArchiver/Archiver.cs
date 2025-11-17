@@ -414,11 +414,12 @@ namespace MeetArchiver
 
             // lets validate their key first, no pint going any further if we can't
             string apikey = "";
+            string email = "";
             using var f = new AuthForm();
             if (f.ShowDialog(this) == DialogResult.OK)
             {
                 apikey = f.EnteredPassword; /* use pw */
-
+                email = f.EnteredEmail; /* use email */
             }
             else
             {
@@ -426,7 +427,7 @@ namespace MeetArchiver
                 return;
             }
 
-            var t = User.GetUserAsync(apikey);
+            var t = User.GetUserAsync(apikey, email);
             t.Wait();
             var user = t.Result;
 

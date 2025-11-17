@@ -11,7 +11,7 @@ namespace DR_APIs.Models
 
 
 
-        public static async Task<User> GetUserAsync(string APIKey, System.Threading.CancellationToken cancellationToken = default)
+        public static async Task<User> GetUserAsync(string APIKey, string email, System.Threading.CancellationToken cancellationToken = default)
         {
             var httpClientHandler = new HttpClientHandler();
             httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) =>
@@ -21,7 +21,7 @@ namespace DR_APIs.Models
 
             // Base URL can be overridden by setting environment variable API_BASE_URL, otherwise fallback to localhost.
             var baseUrl = System.Environment.GetEnvironmentVariable("API_BASE_URL") ?? "https://localhost:7034";
-            var requestUri = $"{baseUrl.TrimEnd('/')}/User/GetUser?APIKey=" + APIKey;
+            var requestUri = $"{baseUrl.TrimEnd('/')}/User/GetUser?APIKey=" + APIKey + "&email=" + email;
 
             var jsonOptions = new System.Text.Json.JsonSerializerOptions
             {

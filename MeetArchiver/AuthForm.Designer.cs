@@ -24,11 +24,13 @@ namespace MeetArchiver
             chkShow = new CheckBox();
             btnOK = new Button();
             btnCancel = new Button();
+            label1 = new Label();
+            txtEmail = new TextBox();
             SuspendLayout();
             // 
             // lblPrompt
             // 
-            lblPrompt.Location = new Point(12, 12);
+            lblPrompt.Location = new Point(12, 79);
             lblPrompt.Name = "lblPrompt";
             lblPrompt.Size = new Size(396, 24);
             lblPrompt.TabIndex = 0;
@@ -37,7 +39,7 @@ namespace MeetArchiver
             // 
             // txtPassword
             // 
-            txtPassword.Location = new Point(15, 42);
+            txtPassword.Location = new Point(15, 109);
             txtPassword.Name = "txtPassword";
             txtPassword.Size = new Size(330, 23);
             txtPassword.TabIndex = 1;
@@ -45,7 +47,7 @@ namespace MeetArchiver
             // 
             // chkShow
             // 
-            chkShow.Location = new Point(353, 42);
+            chkShow.Location = new Point(353, 109);
             chkShow.Name = "chkShow";
             chkShow.Size = new Size(55, 24);
             chkShow.TabIndex = 2;
@@ -54,7 +56,7 @@ namespace MeetArchiver
             // 
             // btnOK
             // 
-            btnOK.Location = new Point(240, 80);
+            btnOK.Location = new Point(240, 147);
             btnOK.Name = "btnOK";
             btnOK.Size = new Size(85, 28);
             btnOK.TabIndex = 3;
@@ -64,18 +66,36 @@ namespace MeetArchiver
             // btnCancel
             // 
             btnCancel.DialogResult = DialogResult.Cancel;
-            btnCancel.Location = new Point(330, 80);
+            btnCancel.Location = new Point(330, 147);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(85, 28);
             btnCancel.TabIndex = 4;
             btnCancel.Text = "Cancel";
             btnCancel.Click += btnCancel_Click;
             // 
+            // label1
+            // 
+            label1.Location = new Point(12, 18);
+            label1.Name = "label1";
+            label1.Size = new Size(396, 24);
+            label1.TabIndex = 5;
+            label1.Text = "Please enter your email:";
+            label1.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // txtEmail
+            // 
+            txtEmail.Location = new Point(15, 48);
+            txtEmail.Name = "txtEmail";
+            txtEmail.Size = new Size(330, 23);
+            txtEmail.TabIndex = 6;
+            // 
             // AuthForm
             // 
             AcceptButton = btnOK;
             CancelButton = btnCancel;
-            ClientSize = new Size(420, 130);
+            ClientSize = new Size(420, 184);
+            Controls.Add(label1);
+            Controls.Add(txtEmail);
             Controls.Add(lblPrompt);
             Controls.Add(txtPassword);
             Controls.Add(chkShow);
@@ -103,5 +123,7 @@ namespace MeetArchiver
             }
             base.Dispose(disposing);
         }
+        private Label label1;
+        private TextBox txtEmail;
     }
 }

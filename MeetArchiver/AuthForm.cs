@@ -9,6 +9,7 @@ namespace MeetArchiver
         /// The password entered by the user. Available after dialog closes with DialogResult.OK.
         /// </summary>
         public string EnteredPassword { get; private set; } = string.Empty;
+        public string EnteredEmail { get; private set; } = string.Empty;
 
         public AuthForm()
         {
@@ -29,6 +30,7 @@ namespace MeetArchiver
         {
             // capture and close with OK
             EnteredPassword = txtPassword.Text ?? string.Empty;
+            EnteredEmail = txtEmail.Text ?? string.Empty;
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
@@ -37,6 +39,7 @@ namespace MeetArchiver
         {
             // ensure password cleared and close with Cancel
             EnteredPassword = string.Empty;
+            EnteredEmail = string.Empty;
             this.DialogResult = DialogResult.Cancel;
             this.Close();
         }

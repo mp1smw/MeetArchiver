@@ -1,4 +1,3 @@
-csharp DR_APIs\Controllers\DiveSheetController.cs
 using DR_APIs.Models;
 using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;

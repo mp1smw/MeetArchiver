@@ -15,6 +15,7 @@
     <Compile Include="..\DR_APIs\Models\Event.cs" Link="ModelsLinked\Event.cs" />
     <Compile Include="..\DR_APIs\Models\Meet.cs" Link="ModelsLinked\Meet.cs" />
     <Compile Include="..\DR_APIs\Models\User.cs" Link="ModelsLinked\User.cs" />
+    <Compile Include="..\DR_APIs\PasswordHasher.cs" Link="PasswordHasher.cs" />
   </ItemGroup>
 
   <ItemGroup>
