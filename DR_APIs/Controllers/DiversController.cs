@@ -1,7 +1,9 @@
 ﻿using DR_APIs.Models;
+using DR_APIs.Utils;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
+using Org.BouncyCastle.Asn1;
 using System.Data;
 
 namespace DR_APIs.Controllers
@@ -24,6 +26,15 @@ namespace DR_APIs.Controllers
         [HttpGet("GetDiver")]
         public IEnumerable<Diver> GetDiver(string FirstName, string LastName, int Born, string Sex)
         {
+
+            //Response.StatusCode = 500;
+            //var writer = new StreamWriter(Response.Body);
+            //var t =  writer.WriteAsync("Unauthorized access");
+            //t.Wait();
+            //return null;
+
+        
+
             bool needsClosing = false;
             if (conn.State != ConnectionState.Open)
             {
@@ -105,13 +116,13 @@ namespace DR_APIs.Controllers
             return divers;
         }
 
-        [HttpPost("CheckAthletes")] 
-        public IEnumerable<Diver> CheckAthletes(List<Diver> divers)
+        [HttpPost("CheckDivers")] 
+        public IEnumerable<Diver> CheckDivers(List<Diver> divers)
         {
+
             conn.Open();
             for (int i=0; i<divers.Count();i++)
             {
-                
                 var matches = GetDiver(divers[i].FirstName, divers[i].LastName, divers[i].Born ?? 0, divers[i].Sex).ToList();
                 if (matches.Count() == 1 && matches[0].RecordStatus== RecordStatus.Valid)
                 {
@@ -128,7 +139,6 @@ namespace DR_APIs.Controllers
                     divers[i].RecordStatus = RecordStatus.PossibleMatches;
                     divers[i].PossibleMatches = matches;
                 }
-
             }
 
             conn.Close();
@@ -139,8 +149,7 @@ namespace DR_APIs.Controllers
         /// Update an existing diver record in the me_divers table using ArchiveID (DRef) as the WHERE key.
         /// Uses parameterized SQL and returns the number of rows affected (0 if no row updated), or -1 on error.
         /// </summary>
-        [HttpPost("UpdateDiver")]
-        public int UpdateDiver([FromBody] Diver diver)
+        private int UpdateDiver(Diver diver)
         {
             if (diver == null || !diver.ArchiveID.HasValue) return -1;
 
@@ -171,7 +180,7 @@ namespace DR_APIs.Controllers
                 cmd.Parameters.AddWithValue("@Sex", (object?)diver.Sex ?? DBNull.Value);
                 cmd.Parameters.AddWithValue("@Born", diver.Born.HasValue ? (object)diver.Born.Value : DBNull.Value);
                 cmd.Parameters.AddWithValue("@Representing", (object?)diver.Representing ?? "");
-                cmd.Parameters.AddWithValue("@TCode", (object?)diver.TCode ?? DBNull.Value);
+                cmd.Parameters.AddWithValue("@TCode", (object?)diver.TCode ?? "");
                 cmd.Parameters.AddWithValue("@Coach", (object?)diver.Coach ?? "");
                 cmd.Parameters.AddWithValue("@Nation", (object?)diver.Nation ?? "");
                 cmd.Parameters.AddWithValue("@DRef", diver.ArchiveID.Value);
@@ -195,8 +204,7 @@ namespace DR_APIs.Controllers
         /// Insert a new diver into the me_divers table using parameterized SQL.
         /// Returns the primary key (DRef) of the newly created record.
         /// </summary>
-        [HttpPost("AddDiver")]
-        public int AddDiver([FromBody] Diver diver)
+        private int AddDiver(Diver diver)
         {
             if (diver == null) return -1;
 
@@ -254,6 +262,15 @@ namespace DR_APIs.Controllers
         [HttpPost("UpdateDivers")]
         public IEnumerable<Diver> UpdateDivers(List<Diver> divers)
         {
+
+            string pw = Request.Headers["X-API-KEY"];
+            string email = Request.Headers["X-API-ID"];
+            if(Helpers.GetUser(pw, email, conn).pk == 0)
+            {
+                Response.StatusCode = 401; // Unauthorized
+                return new List<Diver>();
+            }
+
             conn.Open();
             for (int i = 0; i < divers.Count(); i++)
             {

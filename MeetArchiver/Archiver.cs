@@ -154,7 +154,7 @@ namespace MeetArchiver
             withdrawnLbl.Text = $"Withdrawn Divers ({missingList.Items.Count})";
 
             WorkingForm.Show("Validating Divers... Please wait, this can take some time.");
-            var t = Diver.CheckAthletesAsync(selectedDivers);
+            var t = Diver.CheckDiversAsync(selectedDivers);
             t.Wait();
             checkedDivers = t.Result;
             WorkingForm.Close();
@@ -342,11 +342,11 @@ namespace MeetArchiver
             logTxtBox.AppendText("Beginning Diver Processing...\n");
             logTxtBox.AppendText($"Total Divers to process: {checkedDivers.Count} - {checkedDivers.Where(a => a.RecordStatus == RecordStatus.New).Count()} New Divers and {checkedDivers.Where(a => a.RecordStatus == RecordStatus.Updated).Count()} Updated Divers\n");
             WorkingForm.Show("Updating Divers... Please wait");
-            var t = Diver.UpdateDiversAsync(checkedDivers);
+            var t = Diver.UpdateDiversAsync(checkedDivers, Program.CurrentUser);
             t.Wait();
             var d = t.Result;
             logTxtBox.AppendText("Running finlal validation on diver list.\n");
-            var t2 = Diver.CheckAthletesAsync(checkedDivers);
+            var t2 = Diver.CheckDiversAsync(checkedDivers);
             t2.Wait();
             checkedDivers = t2.Result;
             WorkingForm.Close();
@@ -376,7 +376,7 @@ namespace MeetArchiver
                     return;
                 }
                 // delete meet
-                var t5 = Meet.DeleteByGuidAsync(existingMeet.MeetGUID);
+                var t5 = Meet.DeleteByGuidAsync(existingMeet.MeetGUID, Program.CurrentUser);
                 t5.Wait();
                 int res = t5.Result;
                 logTxtBox.AppendText($"Existing meet with MRef: {existingMeet.MRef} deleted from central database.\n");
@@ -463,6 +463,7 @@ namespace MeetArchiver
                 this.Close();
                 return;
             }
+            user.APIKey = apikey; // store the key for later use
             Program.CurrentUser = user; // squirel this away in Program for later use
 
             loadDataToolStripMenuItem_Click(this, EventArgs.Empty);

@@ -109,8 +109,20 @@ namespace DR_APIs.Controllers
         [HttpPost("AddMeet")]
         public ActionResult<int> AddMeet([FromBody] Meet meet)
         {
+
+            string pw = Request.Headers["X-API-KEY"];
+            string email = Request.Headers["X-API-ID"];
+            var user = Helpers.GetUser(pw, email, conn);
+            if (user.pk == 0)
+            {
+                Response.StatusCode = 401; // Unauthorized
+                return -1;
+            }
+
+
             if (meet == null) return BadRequest("meet is required.");
             if (string.IsNullOrWhiteSpace(meet.MeetGUID)) return BadRequest("MeetGUID is required.");
+
 
             bool needsClosing = false;
             try
@@ -136,9 +148,9 @@ namespace DR_APIs.Controllers
                 // Insert the meet (use parameterized query)
                 const string insertSql = @"
                     INSERT INTO me_meets
-                        ( SDate, EDate, MTitle, Venue, City, Nation, International, MeetGUID)
+                        ( SDate, EDate, MTitle, Venue, City, Nation, International, MeetGUID, owner)
                     VALUES
-                        ( @SDate, @EDate, @MTitle, @Venue, @City, @Nation, @International, @MeetGUID);";
+                        ( @SDate, @EDate, @MTitle, @Venue, @City, @Nation, @International, @MeetGUID, @owner);";
 
                 using var cmd = new MySqlCommand(insertSql, conn);
 
@@ -171,6 +183,7 @@ namespace DR_APIs.Controllers
                 // store International as tinyint 0/1
                 cmd.Parameters.AddWithValue("@International", meet.International ? 1 : 0);
                 cmd.Parameters.AddWithValue("@MeetGUID", meet.MeetGUID);
+                cmd.Parameters.AddWithValue("@owner", user.pk);
 
                 cmd.ExecuteNonQuery();
 
@@ -196,6 +209,16 @@ namespace DR_APIs.Controllers
         {
             if (string.IsNullOrWhiteSpace(meetGuid)) return BadRequest("meetGuid is required.");
 
+            string pw = Request.Headers["X-API-KEY"];
+            string email = Request.Headers["X-API-ID"];
+            var user = Helpers.GetUser(pw, email, conn);
+            if (user.pk == 0)
+            {
+                Response.StatusCode = 401; // Unauthorized
+                return -1;
+            }
+
+
             bool needsClosing = false;
             MySqlTransaction? tx = null;
             try
@@ -208,13 +231,22 @@ namespace DR_APIs.Controllers
 
                 // Find MRef for the supplied MeetGUID
                 int? mref = null;
-                const string findSql = "SELECT MRef FROM me_meets WHERE MeetGUID = @MeetGUID LIMIT 1;";
-                using (var findCmd = new MySqlCommand(findSql, conn))
-                {
+                const string findSql = "SELECT MRef, owner FROM me_meets WHERE MeetGUID = @MeetGUID LIMIT 1;";
+                var findCmd = new MySqlCommand(findSql, conn);
+                
                     findCmd.Parameters.AddWithValue("@MeetGUID", meetGuid);
-                    var result = findCmd.ExecuteScalar();
-                    if (result == null || result == DBNull.Value) return NotFound();
-                    mref = Convert.ToInt32(result);
+
+                    var dt = new DataTable();
+                    using var da = new MySqlDataAdapter(findCmd);
+                    da.Fill(dt);
+
+                mref = dt.Rows[0]["MRef"] != DBNull.Value ? Convert.ToInt32(dt.Rows[0]["MRef"]) : (int?)null;
+                int owner= Int32.Parse(dt.Rows[0]["owner"].ToString());
+
+                if (owner != user.pk)  // user did't publish it so they can't delete it
+                {
+                    Response.StatusCode = 401; // Unauthorized
+                    return -1;  
                 }
 
                 tx = conn.BeginTransaction();

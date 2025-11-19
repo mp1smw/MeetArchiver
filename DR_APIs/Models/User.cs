@@ -7,6 +7,7 @@ namespace DR_APIs.Models
         public string APIKey { get; set; }
         public string UserEmail { get; set; }
         public string Role { get; set; }
+        public int pk { get; set; }
 
 
 

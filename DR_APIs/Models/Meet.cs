@@ -229,8 +229,10 @@ namespace DR_APIs.Models
         /// Returns the number of meet rows deleted (as returned by the API), returns 0 if the meet was not found,
         /// or -1 on error/unparseable response.
         /// </summary>
-        public static async Task<int> DeleteByGuidAsync(string meetGuid, CancellationToken cancellationToken = default)
+        public static async Task<int> DeleteByGuidAsync(string meetGuid, User user, CancellationToken cancellationToken = default)
         {
+
+
             if (string.IsNullOrWhiteSpace(meetGuid)) throw new ArgumentNullException(nameof(meetGuid));
 
             var httpClientHandler = new HttpClientHandler();
@@ -245,6 +247,10 @@ namespace DR_APIs.Models
             };
 
             using var client = new HttpClient(httpClientHandler);
+
+            client.DefaultRequestHeaders.Add("X-API-KEY", user.APIKey);
+            client.DefaultRequestHeaders.Add("X-API-ID", user.UserEmail.ToString());
+
             using var request = new HttpRequestMessage(HttpMethod.Delete, requestUri);
             using var response = await client.SendAsync(request, cancellationToken).ConfigureAwait(false);
 

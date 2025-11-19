@@ -155,7 +155,7 @@ namespace DR_APIs.Models
             return result;
         }
 
-        public static async Task<List<Diver>> CheckAthletesAsync(List<Diver> divers, System.Threading.CancellationToken cancellationToken = default)
+        public static async Task<List<Diver>> CheckDiversAsync(List<Diver> divers, System.Threading.CancellationToken cancellationToken = default)
         {
             var httpClientHandler = new HttpClientHandler();
             httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) =>
@@ -167,7 +167,7 @@ namespace DR_APIs.Models
 
             // Base URL can be overridden by setting environment variable API_BASE_URL, otherwise fallback to localhost.
             var baseUrl = System.Environment.GetEnvironmentVariable("API_BASE_URL") ?? "https://localhost:7034";
-            var requestUri = $"{baseUrl.TrimEnd('/')}/Divers/CheckAthletes";
+            var requestUri = $"{baseUrl.TrimEnd('/')}/Divers/CheckDivers";
 
             var jsonOptions = new System.Text.Json.JsonSerializerOptions
             {
@@ -189,7 +189,7 @@ namespace DR_APIs.Models
             return result ?? new List<Diver>();
         }
 
-        public static async Task<List<Diver>> UpdateDiversAsync(List<Diver> divers, System.Threading.CancellationToken cancellationToken = default)
+        public static async Task<List<Diver>> UpdateDiversAsync(List<Diver> divers, User user, System.Threading.CancellationToken cancellationToken = default)
         {
             var httpClientHandler = new HttpClientHandler();
             httpClientHandler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) =>
@@ -201,7 +201,7 @@ namespace DR_APIs.Models
 
             // Base URL can be overridden by setting environment variable API_BASE_URL, otherwise fallback to localhost.
             var baseUrl = System.Environment.GetEnvironmentVariable("API_BASE_URL") ?? "https://localhost:7034";
-            var requestUri = $"{baseUrl.TrimEnd('/')}/Divers/ProcessDivers";
+            var requestUri = $"{baseUrl.TrimEnd('/')}/Divers/UpdateDivers";
 
             var jsonOptions = new System.Text.Json.JsonSerializerOptions
             {
@@ -212,6 +212,9 @@ namespace DR_APIs.Models
 
             using var client = new System.Net.Http.HttpClient(httpClientHandler);
             using var content = new System.Net.Http.StringContent(json, System.Text.Encoding.UTF8, "application/json");
+
+            client.DefaultRequestHeaders.Add("X-API-KEY", user.APIKey);
+            client.DefaultRequestHeaders.Add("X-API-ID", user.pk.ToString());
 
             using var response = await client.PostAsync(requestUri, content, cancellationToken).ConfigureAwait(false);
             //response.EnsureSuccessStatusCode();
