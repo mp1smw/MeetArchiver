@@ -16,7 +16,15 @@ namespace MeetArchiver
         [STAThread]
         static void Main()
         {
-            CountryCode = new Locaton().GetCountryByIP();
+            try
+            {
+                CountryCode = new Locaton().GetCountryByIP();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error determining location: Please make sure you have an active internet connection before trying again.", "Network connection error");
+                return;
+            }
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
