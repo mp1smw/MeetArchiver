@@ -376,15 +376,22 @@ namespace MeetArchiver
                     return;
                 }
                 // delete meet
-                var t5 = Meet.DeleteByGuidAsync(existingMeet.MeetGUID, Program.CurrentUser);
-                t5.Wait();
-                int res = t5.Result;
-                logTxtBox.AppendText($"Existing meet with MRef: {existingMeet.MRef} deleted from central database.\n");
-
+                try
+                {
+                    var t5 = Meet.DeleteByGuidAsync(existingMeet.MeetGUID, Program.CurrentUser);
+                    t5.Wait();
+                    int res = t5.Result;
+                    logTxtBox.AppendText($"Existing meet with MRef: {existingMeet.MRef} deleted from central database.\n");
+                }
+                catch (Exception ex)
+                {
+                    logTxtBox.AppendText($"Error deleting existing meet: {ex.Message}\n");
+                    return;
+                }
             }
 
             logTxtBox.AppendText("Creating new meet.\n");
-            var t3 = Meet.AddMeetAsync(selectedMeet);
+            var t3 = Meet.AddMeetAsync(selectedMeet, Program.CurrentUser);
             t3.Wait();
             var newMeetRef = t3.Result;
             logTxtBox.AppendText($"New meet created with MRef: {newMeetRef}\n");

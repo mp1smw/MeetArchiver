@@ -133,7 +133,7 @@ namespace DR_APIs.Models
         /// Call the API endpoint /Meet/AddMeet to insert this meet.
         /// Returns the newly created MRef on success, or -1 on failure/empty response.
         /// </summary>
-        public static async Task<int> AddMeetAsync(Meet meet, CancellationToken cancellationToken = default)
+        public static async Task<int> AddMeetAsync(Meet meet, User user, CancellationToken cancellationToken = default)
         {
             if (meet is null) throw new ArgumentNullException(nameof(meet));
 
@@ -153,6 +153,9 @@ namespace DR_APIs.Models
 
             using var client = new HttpClient(httpClientHandler);
             using var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            client.DefaultRequestHeaders.Add("X-API-KEY", user.APIKey);
+            client.DefaultRequestHeaders.Add("X-API-ID", user.UserEmail.ToString());
 
             using var response = await client.PostAsync(requestUri, content, cancellationToken).ConfigureAwait(false);
             var responseJson = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
@@ -257,10 +260,18 @@ namespace DR_APIs.Models
             if (response.StatusCode == HttpStatusCode.NotFound)
                 return 0;
 
-            response.EnsureSuccessStatusCode();
-
             var responseJson = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
             if (string.IsNullOrWhiteSpace(responseJson)) return -1;
+
+            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                throw new UnauthorizedAccessException(responseJson.ToString());
+            }
+
+            if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+            {
+                throw new Exception(responseJson.ToString());
+            }
 
             try
             {

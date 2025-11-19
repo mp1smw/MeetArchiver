@@ -24,7 +24,7 @@ namespace DR_APIs.Controllers
         }
 
         [HttpGet("GetDiver")]
-        public IEnumerable<Diver> GetDiver(string FirstName, string LastName, int Born, string Sex)
+        public ActionResult<List<Diver>> GetDiver(string FirstName, string LastName, int Born, string Sex)
         {
 
             //Response.StatusCode = 500;
@@ -32,7 +32,7 @@ namespace DR_APIs.Controllers
             //var t =  writer.WriteAsync("Unauthorized access");
             //t.Wait();
             //return null;
-
+            //return StatusCode(401 , "Unauthorized access");
         
 
             bool needsClosing = false;
@@ -77,7 +77,7 @@ namespace DR_APIs.Controllers
                 if (needsClosing)
                     conn.Close();
               
-                return divers;
+                return Ok(divers);
             }
 
             // didnlt find a unique match, try soundex
@@ -113,17 +113,18 @@ namespace DR_APIs.Controllers
 
             if(needsClosing)
                 conn.Close();
-            return divers;
+            return Ok(divers);
         }
 
         [HttpPost("CheckDivers")] 
-        public IEnumerable<Diver> CheckDivers(List<Diver> divers)
+        public ActionResult<IEnumerable<Diver>> CheckDivers(List<Diver> divers)
         {
 
             conn.Open();
             for (int i=0; i<divers.Count();i++)
             {
-                var matches = GetDiver(divers[i].FirstName, divers[i].LastName, divers[i].Born ?? 0, divers[i].Sex).ToList();
+                var matches = (List<Diver>)((ObjectResult)GetDiver(divers[i].FirstName, divers[i].LastName, divers[i].Born ?? 0, divers[i].Sex).Result).Value;
+
                 if (matches.Count() == 1 && matches[0].RecordStatus== RecordStatus.Valid)
                 {
                     int id = divers[i].ID; // copy local ID
@@ -260,39 +261,46 @@ namespace DR_APIs.Controllers
         }
 
         [HttpPost("UpdateDivers")]
-        public IEnumerable<Diver> UpdateDivers(List<Diver> divers)
+        public ActionResult<IEnumerable<Diver>> UpdateDivers(List<Diver> divers)
         {
 
             string pw = Request.Headers["X-API-KEY"];
             string email = Request.Headers["X-API-ID"];
-            if(Helpers.GetUser(pw, email, conn).pk == 0)
+            var user = Helpers.GetUser(pw, email, conn);
+            if (user.pk == 0)
             {
-                Response.StatusCode = 401; // Unauthorized
-                return new List<Diver>();
+                return Unauthorized("Unauthorized access, you do not have permission to make destructive changes to the database");
             }
-
-            conn.Open();
-            for (int i = 0; i < divers.Count(); i++)
+            try
             {
-                if(divers[i].RecordStatus == RecordStatus.Valid)
-                    continue;
-                if (divers[i].RecordStatus == RecordStatus.New)
+                conn.Open();
+                for (int i = 0; i < divers.Count(); i++)
                 {
-                    var diverId = AddDiver(divers[i]);
-                    divers[i].ArchiveID = diverId;
-                    divers[i].RecordStatus = RecordStatus.Valid;
-                }
-                else if (divers[i].RecordStatus == RecordStatus.Updated)
-                {
-                    var rows = UpdateDiver(divers[i]);
-                    divers[i].RecordStatus = RecordStatus.Valid;
+                    if (divers[i].RecordStatus == RecordStatus.Valid)
+                        continue;
+                    if (divers[i].RecordStatus == RecordStatus.New)
+                    {
+                        var diverId = AddDiver(divers[i]);
+                        divers[i].ArchiveID = diverId;
+                        divers[i].RecordStatus = RecordStatus.Valid;
+                    }
+                    else if (divers[i].RecordStatus == RecordStatus.Updated)
+                    {
+                        var rows = UpdateDiver(divers[i]);
+                        divers[i].RecordStatus = RecordStatus.Valid;
+                    }
+
                 }
 
+                conn.Close();
+                return divers;
             }
-
-            conn.Close();
-            return divers;
+            catch (Exception ex)
+            {
+                if (conn.State == ConnectionState.Open)
+                    conn.Close();
+                return StatusCode(500, "Error updating divers: " + ex.Message);
+            }
         }
-
     }
 }

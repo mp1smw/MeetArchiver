@@ -23,8 +23,17 @@ namespace DR_APIs.Controllers
 
 
         [HttpPost("AddDiveSheets")]
-        public bool AddDiveSheets(List<DiveSheet> sheets)
+        public ActionResult<bool> AddDiveSheets(List<DiveSheet> sheets)
         {
+
+            string pw = Request.Headers["X-API-KEY"];
+            string email = Request.Headers["X-API-ID"];
+            var user = Helpers.GetUser(pw, email, conn);
+            if (user.pk == 0)
+            {
+                return Unauthorized("Unauthorized access, you do not have permission to make changes to the database");
+            }
+
             try
             {
                 conn.Open();
@@ -37,20 +46,19 @@ namespace DR_APIs.Controllers
                 conn.Close();
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 if (conn.State == ConnectionState.Open)
                     conn.Close();
-                return false;
+                return StatusCode(500, ex.Message);
             }
         }
         /// <summary>
         /// Insert a divesheet row. Returns LastInsertedId or -1 on error.
         /// </summary>
-        [HttpPost("AddDiveSheet")]
-        public ActionResult<int> AddDiveSheet([FromBody] DiveSheet ds)
+        private int AddDiveSheet(DiveSheet ds)
         {
-            if (ds == null) return BadRequest("divesheet is required.");
+            if (ds == null) throw new Exception("divesheet is required.");
 
             bool needsClosing = false;
             try
@@ -140,11 +148,11 @@ VALUES
                 cmd.ExecuteNonQuery();
 
                 var lastId = Convert.ToInt32(cmd.LastInsertedId);
-                return Ok(lastId);
+                return lastId;
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                throw new Exception("Error inserting divesheet: " + ex.Message);
             }
             finally
             {

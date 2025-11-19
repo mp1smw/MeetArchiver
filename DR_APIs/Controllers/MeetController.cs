@@ -109,16 +109,13 @@ namespace DR_APIs.Controllers
         [HttpPost("AddMeet")]
         public ActionResult<int> AddMeet([FromBody] Meet meet)
         {
-
             string pw = Request.Headers["X-API-KEY"];
             string email = Request.Headers["X-API-ID"];
             var user = Helpers.GetUser(pw, email, conn);
             if (user.pk == 0)
             {
-                Response.StatusCode = 401; // Unauthorized
-                return -1;
+                return Unauthorized("Unauthorized access, you do not have permission to make changes to the database");
             }
-
 
             if (meet == null) return BadRequest("meet is required.");
             if (string.IsNullOrWhiteSpace(meet.MeetGUID)) return BadRequest("MeetGUID is required.");
@@ -141,7 +138,7 @@ namespace DR_APIs.Controllers
                     var count = Convert.ToInt32(checkCmd.ExecuteScalar() ?? 0);
                     if (count > 0)
                     {
-                        return Conflict("MeetGUID already exists.");
+                        return Unauthorized("Meet already exists, you must delete it before trying publish again.");
                     }
                 }
 
@@ -209,13 +206,12 @@ namespace DR_APIs.Controllers
         {
             if (string.IsNullOrWhiteSpace(meetGuid)) return BadRequest("meetGuid is required.");
 
-            string pw = Request.Headers["X-API-KEY"];
+             string pw = Request.Headers["X-API-KEY"];
             string email = Request.Headers["X-API-ID"];
             var user = Helpers.GetUser(pw, email, conn);
             if (user.pk == 0)
             {
-                Response.StatusCode = 401; // Unauthorized
-                return -1;
+                return Unauthorized("Unauthorized access, you do not have permission to make destructive changes to the database");
             }
 
 
@@ -245,8 +241,8 @@ namespace DR_APIs.Controllers
 
                 if (owner != user.pk)  // user did't publish it so they can't delete it
                 {
-                    Response.StatusCode = 401; // Unauthorized
-                    return -1;  
+                    return Unauthorized("Unauthorized access. Only the person that published the meet can delete it");
+
                 }
 
                 tx = conn.BeginTransaction();
