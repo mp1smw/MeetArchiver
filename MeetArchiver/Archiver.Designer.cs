@@ -63,6 +63,7 @@
             label2 = new Label();
             logTxtBox = new RichTextBox();
             archiveBtn = new Button();
+            nextClubcBtn = new Button();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -232,6 +233,7 @@
             // 
             // clubsTab
             // 
+            clubsTab.Controls.Add(nextClubcBtn);
             clubsTab.Controls.Add(newClubBtn);
             clubsTab.Controls.Add(findBtn);
             clubsTab.Controls.Add(searchTxt);
@@ -449,6 +451,17 @@
             archiveBtn.UseVisualStyleBackColor = true;
             archiveBtn.Click += ArchiveEventNow;
             // 
+            // nextClubcBtn
+            // 
+            nextClubcBtn.BackColor = Color.Transparent;
+            nextClubcBtn.Location = new Point(977, 411);
+            nextClubcBtn.Name = "nextClubcBtn";
+            nextClubcBtn.Size = new Size(75, 23);
+            nextClubcBtn.TabIndex = 15;
+            nextClubcBtn.Text = "Next";
+            nextClubcBtn.UseVisualStyleBackColor = false;
+            nextClubcBtn.Click += nextClubcBtn_Click;
+            // 
             // Archiver
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -510,5 +523,6 @@
         private ComboBox nationCmb;
         private TextBox nationDescriptionTxt;
         private TextBox internationalDescriptionTxt;
+        private Button nextClubcBtn;
     }
 }

@@ -107,6 +107,7 @@ namespace DR_APIs.Controllers
                 diver.Born = Convert.ToInt32(row["Born"]);
                 diver.Representing = row["Representing"].ToString();
                 diver.TCode = row["TCode"].ToString();
+                diver.RecordStatus = RecordStatus.PossibleMatches;
                 diver.PossibleMatches = new List<Diver>();
                 divers.Add(diver);
             }

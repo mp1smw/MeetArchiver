@@ -246,11 +246,14 @@ namespace MeetArchiver
             mismatchedClubsLst.Tag = mismatchedClubs;
             if (mismatchedClubs.Count == 0)
             {
-                mismatchedClubsLst.BackColor = Color.White;
-                var result = MessageBox.Show("All club mismatches are now resolved, would you like to move onto uploading the meet", "Club cleansing complete", MessageBoxButtons.YesNo);
-                if (result == DialogResult.Yes)
+                if (sender == null)
                 {
-                    tabControl1.SelectedTab = uploadTab;
+                    mismatchedClubsLst.BackColor = Color.White;
+                    var result = MessageBox.Show("All club mismatches are now resolved, would you like to move onto uploading the meet", "Club cleansing complete", MessageBoxButtons.YesNo);
+                    if (result == DialogResult.Yes)
+                    {
+                        tabControl1.SelectedTab = uploadTab;
+                    }
                 }
             }
             else
@@ -397,12 +400,12 @@ namespace MeetArchiver
             logTxtBox.AppendText($"New meet created with MRef: {newMeetRef}\n");
 
             // now we want to update the events and divesheets with the correct MRef IDs
-            foreach(Event ev in selectedEvents)
+            foreach (Event ev in selectedEvents)
             {
                 ev.MeetRef = newMeetRef;
             }
 
-            foreach(DiveSheet ds in selectedDiveSheets)
+            foreach (DiveSheet ds in selectedDiveSheets)
             {
                 ds.Meet = newMeetRef; // should be the same but just to be sure
             }
@@ -500,6 +503,11 @@ namespace MeetArchiver
         private void nationCmb_SelectedIndexChanged(object sender, EventArgs e)
         {
             selectedMeet.Nation = nationCmb.Text;
+        }
+
+        private void nextClubcBtn_Click(object sender, EventArgs e)
+        {
+            tabControl1.SelectedTab = uploadTab;
         }
     }
 }
