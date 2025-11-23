@@ -42,7 +42,7 @@ namespace DR_APIs.Controllers
                 needsClosing = true;
             }
 
-            string sql = "SELECT * FROM me_divers WHERE @FirstName = FirstName " +
+            string sql = "SELECT * FROM ME_Divers WHERE @FirstName = FirstName " +
                 "AND LastName = @LastName " +
                 "AND Born = @Born";
 
@@ -81,7 +81,7 @@ namespace DR_APIs.Controllers
             }
 
             // didnlt find a unique match, try soundex
-            sql = "SELECT * FROM me_divers WHERE (soundex(@FirstName) = soundex(FirstName) " +
+            sql = "SELECT * FROM ME_Divers WHERE (soundex(@FirstName) = soundex(FirstName) " +
                 "AND soundex(LastName) = soundex(@LastName) " +
                 "AND Born>=(@Born-1) AND Born<=(@Born+1)) OR (LastName=@LastName AND Born=@Born AND Sex=@Sex);";
 
@@ -147,7 +147,7 @@ namespace DR_APIs.Controllers
         }
 
         /// <summary>
-        /// Update an existing diver record in the me_divers table using ArchiveID (DRef) as the WHERE key.
+        /// Update an existing diver record in the ME_Divers table using ArchiveID (DRef) as the WHERE key.
         /// Uses parameterized SQL and returns the number of rows affected (0 if no row updated), or -1 on error.
         /// </summary>
         private int UpdateDiver(Diver diver)
@@ -163,7 +163,7 @@ namespace DR_APIs.Controllers
                     needsClosing = true;
                 }
 
-                var sql = @"UPDATE me_divers SET
+                var sql = @"UPDATE ME_Divers SET
                                 FirstName = @FirstName,
                                 LastName = @LastName,
                                 Sex = @Sex,
@@ -202,7 +202,7 @@ namespace DR_APIs.Controllers
 
 
         /// <summary>
-        /// Insert a new diver into the me_divers table using parameterized SQL.
+        /// Insert a new diver into the ME_Divers table using parameterized SQL.
         /// Returns the primary key (DRef) of the newly created record.
         /// </summary>
         private int AddDiver(Diver diver)
@@ -219,7 +219,7 @@ namespace DR_APIs.Controllers
                 }
 
                 // Insert using parameterized query. Columns chosen to match available Diver properties.
-                var sql = @"INSERT INTO me_divers
+                var sql = @"INSERT INTO ME_Divers
                             (FirstName, LastName, Sex, Born, Representing, TCode, Coach, Nation, InsertDT)
                             VALUES
                             (@FirstName, @LastName, @Sex, @Born, @Representing, @TCode, @Coach, @Nation, @InsertDT);";

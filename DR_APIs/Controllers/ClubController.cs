@@ -31,7 +31,7 @@ namespace DR_APIs.Controllers
                 needsClosing = true;
             }
 
-            string sql = "SELECT distinct Representing, TCode FROM me_divers WHERE Representing like @search OR  TCode like @search";
+            string sql = "SELECT distinct Representing, TCode FROM ME_Divers WHERE Representing like @search OR  TCode like @search";
 
             MySqlCommand cmd = new MySqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@search","%" + searchStr + "%");
@@ -66,7 +66,7 @@ namespace DR_APIs.Controllers
                 needsClosing = true;
             }
 
-            string sql = "SELECT distinct Representing, TCode FROM me_divers WHERE Representing = @representing AND TCode = @tcode";
+            string sql = "SELECT distinct Representing, TCode FROM ME_Divers WHERE Representing = @representing AND TCode = @tcode";
 
             MySqlCommand cmd = new MySqlCommand(sql, conn);
             cmd.Parameters.AddWithValue("@representing", representing);

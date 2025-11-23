@@ -70,7 +70,7 @@ namespace DR_APIs.Controllers
                 }
 
                 const string sql = @"
-INSERT INTO me_divesheets
+INSERT INTO ME_Divesheets
     (`Meet`, `Event`, `DiverA`, `DiverB`, `Round`, `Attempt`, `StartOrder`,
      `DiveNo`, `Position`, `Board`, `Tariff`,
      `J1`,`J2`,`J3`,`J4`,`J5`,`J6`,`J7`,`J8`,`J9`,`J10`,`J11`,
@@ -166,7 +166,7 @@ VALUES
         [HttpGet("GetByEvent")]
         public ActionResult<List<DiveSheet>> GetByEvent(int eventRef)
         {
-            return GetByQuery("SELECT * FROM me_divesheets WHERE `Event` = @Key ORDER BY `Round`, `StartOrder`;", "@Key", eventRef);
+            return GetByQuery("SELECT * FROM ME_Divesheets WHERE `Event` = @Key ORDER BY `Round`, `StartOrder`;", "@Key", eventRef);
         }
 
         /// <summary>
@@ -175,7 +175,7 @@ VALUES
         [HttpGet("GetByMeet")]
         public ActionResult<List<DiveSheet>> GetByMeet(int meet)
         {
-            return GetByQuery("SELECT * FROM me_divesheets WHERE `Meet` = @Key ORDER BY `Event`, `Round`, `StartOrder`;", "@Key", meet);
+            return GetByQuery("SELECT * FROM ME_Divesheets WHERE `Meet` = @Key ORDER BY `Event`, `Round`, `StartOrder`;", "@Key", meet);
         }
 
         /// <summary>
@@ -184,7 +184,7 @@ VALUES
         [HttpGet("GetByDiverA")]
         public ActionResult<List<DiveSheet>> GetByDiverA(int diverA)
         {
-            return GetByQuery("SELECT * FROM me_divesheets WHERE DiverA = @Key ORDER BY `Meet`, `Event`, `Round`, `StartOrder`;", "@Key", diverA);
+            return GetByQuery("SELECT * FROM ME_Divesheets WHERE DiverA = @Key ORDER BY `Meet`, `Event`, `Round`, `StartOrder`;", "@Key", diverA);
         }
 
         /// <summary>
@@ -193,7 +193,7 @@ VALUES
         [HttpGet("GetByDiverB")]
         public ActionResult<List<DiveSheet>> GetByDiverB(int diverB)
         {
-            return GetByQuery("SELECT * FROM me_divesheets WHERE DiverB = @Key ORDER BY `Meet`, `Event`, `Round`, `StartOrder`;", "@Key", diverB);
+            return GetByQuery("SELECT * FROM ME_Divesheets WHERE DiverB = @Key ORDER BY `Meet`, `Event`, `Round`, `StartOrder`;", "@Key", diverB);
         }
 
         // common helper to execute simple parameterized queries that return DiveSheet rows

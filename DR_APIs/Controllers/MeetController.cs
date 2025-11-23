@@ -37,7 +37,7 @@ namespace DR_APIs.Controllers
                     needsClosing = true;
                 }
 
-                const string sql = "SELECT * FROM me_meets WHERE MeetGUID = @MeetGUID LIMIT 1;";
+                const string sql = "SELECT * FROM ME_Meets WHERE MeetGUID = @MeetGUID LIMIT 1;";
                 using var cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@MeetGUID", meetGuid);
 
@@ -77,7 +77,7 @@ namespace DR_APIs.Controllers
                     needsClosing = true;
                 }
 
-                const string sql = "SELECT * FROM me_meets WHERE MTitle LIKE @search;";
+                const string sql = "SELECT * FROM ME_Meets WHERE MTitle LIKE @search;";
                 using var cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue("@search", "%" + title + "%");
 
@@ -131,7 +131,7 @@ namespace DR_APIs.Controllers
                 }
 
                 // Check MeetGUID uniqueness
-                const string checkSql = "SELECT COUNT(*) FROM me_meets WHERE MeetGUID = @MeetGUID;";
+                const string checkSql = "SELECT COUNT(*) FROM ME_Meets WHERE MeetGUID = @MeetGUID;";
                 using (var checkCmd = new MySqlCommand(checkSql, conn))
                 {
                     checkCmd.Parameters.AddWithValue("@MeetGUID", meet.MeetGUID);
@@ -144,7 +144,7 @@ namespace DR_APIs.Controllers
 
                 // Insert the meet (use parameterized query)
                 const string insertSql = @"
-                    INSERT INTO me_meets
+                    INSERT INTO ME_Meets
                         ( SDate, EDate, MTitle, Venue, City, Nation, International, MeetGUID, owner)
                     VALUES
                         ( @SDate, @EDate, @MTitle, @Venue, @City, @Nation, @International, @MeetGUID, @owner);";
@@ -227,7 +227,7 @@ namespace DR_APIs.Controllers
 
                 // Find MRef for the supplied MeetGUID
                 int? mref = null;
-                const string findSql = "SELECT MRef, owner FROM me_meets WHERE MeetGUID = @MeetGUID LIMIT 1;";
+                const string findSql = "SELECT MRef, owner FROM ME_Meets WHERE MeetGUID = @MeetGUID LIMIT 1;";
                 var findCmd = new MySqlCommand(findSql, conn);
                 
                     findCmd.Parameters.AddWithValue("@MeetGUID", meetGuid);
@@ -247,8 +247,8 @@ namespace DR_APIs.Controllers
 
                 tx = conn.BeginTransaction();
 
-                // Delete dive sheets for this meet (assumes table name me_divesheets and column Meet)
-                const string deleteDiveSheetsSql = "DELETE FROM me_divesheets WHERE `Meet` = @MRef;";
+                // Delete dive sheets for this meet (assumes table name ME_Divesheets and column Meet)
+                const string deleteDiveSheetsSql = "DELETE FROM ME_Divesheets WHERE `Meet` = @MRef;";
                 using (var dsCmd = new MySqlCommand(deleteDiveSheetsSql, conn, tx))
                 {
                     dsCmd.Parameters.AddWithValue("@MRef", mref.Value);
@@ -264,7 +264,7 @@ namespace DR_APIs.Controllers
                 }
 
                 // Finally delete the meet row(s)
-                const string deleteMeetSql = "DELETE FROM me_meets WHERE MRef = @MRef;";
+                const string deleteMeetSql = "DELETE FROM ME_Meets WHERE MRef = @MRef;";
                 int meetsDeleted;
                 using (var meetCmd = new MySqlCommand(deleteMeetSql, conn, tx))
                 {
