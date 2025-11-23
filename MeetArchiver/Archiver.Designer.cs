@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             splitContainer1 = new SplitContainer();
-            InstructionLbl = new Label();
+            InstructionLbl = new TextBox();
             tabControl1 = new TabControl();
             meetTab = new TabPage();
             meetsList = new ListBox();
@@ -94,12 +94,13 @@
             // 
             // InstructionLbl
             // 
-            InstructionLbl.AutoSize = true;
+            InstructionLbl.Dock = DockStyle.Fill;
             InstructionLbl.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
             InstructionLbl.ForeColor = Color.DarkGreen;
-            InstructionLbl.Location = new Point(12, 11);
+            InstructionLbl.Location = new Point(0, 0);
+            InstructionLbl.Multiline = true;
             InstructionLbl.Name = "InstructionLbl";
-            InstructionLbl.Size = new Size(51, 20);
+            InstructionLbl.Size = new Size(1122, 63);
             InstructionLbl.TabIndex = 0;
             InstructionLbl.Text = "label2";
             // 
@@ -500,7 +501,7 @@
         private GroupBox groupBox1;
         private GroupBox groupBox2;
         private Button archiveBtn;
-        private Label InstructionLbl;
+        private TextBox InstructionLbl;
         private Label label2;
         private RichTextBox logTxtBox;
         private Button newClubBtn;
