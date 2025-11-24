@@ -153,6 +153,20 @@ namespace MeetArchiver
             }
             withdrawnLbl.Text = $"Withdrawn Divers ({missingList.Items.Count})";
 
+            List<Event> eventsToRemove = new List<Event>();
+            // lets remove and events with no dives in the sheet
+            foreach(var ev in selectedEvents)
+            {
+                if(!diveSheets.Where(a => a.EPRef == ev.ERef).Any())
+                {
+                    eventsToRemove.Add(ev);
+                }
+            }
+            foreach (Event er in eventsToRemove)
+            {
+                selectedEvents.Remove(er);
+            }
+
             WorkingForm.Show("Validating Divers... Please wait, this can take some time.");
             var t = Diver.CheckDiversAsync(selectedDivers);
             t.Wait();
