@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Archiver));
             splitContainer1 = new SplitContainer();
             InstructionLbl = new TextBox();
             tabControl1 = new TabControl();
@@ -43,6 +44,7 @@
             missingList = new ListBox();
             matchedList = new ListBox();
             clubsTab = new TabPage();
+            nextClubcBtn = new Button();
             newClubBtn = new Button();
             findBtn = new Button();
             searchTxt = new TextBox();
@@ -63,7 +65,6 @@
             label2 = new Label();
             logTxtBox = new RichTextBox();
             archiveBtn = new Button();
-            nextClubcBtn = new Button();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -251,6 +252,17 @@
             clubsTab.TabIndex = 2;
             clubsTab.Text = "Clubs";
             clubsTab.UseVisualStyleBackColor = true;
+            // 
+            // nextClubcBtn
+            // 
+            nextClubcBtn.BackColor = Color.Transparent;
+            nextClubcBtn.Location = new Point(977, 411);
+            nextClubcBtn.Name = "nextClubcBtn";
+            nextClubcBtn.Size = new Size(75, 23);
+            nextClubcBtn.TabIndex = 15;
+            nextClubcBtn.Text = "Next";
+            nextClubcBtn.UseVisualStyleBackColor = false;
+            nextClubcBtn.Click += nextClubcBtn_Click;
             // 
             // newClubBtn
             // 
@@ -451,23 +463,13 @@
             archiveBtn.UseVisualStyleBackColor = true;
             archiveBtn.Click += ArchiveEventNow;
             // 
-            // nextClubcBtn
-            // 
-            nextClubcBtn.BackColor = Color.Transparent;
-            nextClubcBtn.Location = new Point(977, 411);
-            nextClubcBtn.Name = "nextClubcBtn";
-            nextClubcBtn.Size = new Size(75, 23);
-            nextClubcBtn.TabIndex = 15;
-            nextClubcBtn.Text = "Next";
-            nextClubcBtn.UseVisualStyleBackColor = false;
-            nextClubcBtn.Click += nextClubcBtn_Click;
-            // 
             // Archiver
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1122, 602);
             Controls.Add(splitContainer1);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "Archiver";
             Text = "Meet Archiver";
             Load += Archiver_Load;

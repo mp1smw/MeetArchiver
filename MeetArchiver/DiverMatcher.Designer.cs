@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DiverMatcher));
             currDiverLbl = new Label();
             ArchiveDiverLbl = new Label();
             matchLst = new ListBox();
@@ -131,6 +132,7 @@
             Controls.Add(matchLst);
             Controls.Add(ArchiveDiverLbl);
             Controls.Add(currDiverLbl);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "DiverMatcher";
             Text = "Match Diver";
             Load += DiverMatcher_Load;

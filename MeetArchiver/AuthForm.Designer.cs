@@ -19,6 +19,7 @@ namespace MeetArchiver
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AuthForm));
             lblPrompt = new Label();
             txtPassword = new TextBox();
             chkShow = new CheckBox();
@@ -101,13 +102,15 @@ namespace MeetArchiver
             Controls.Add(chkShow);
             Controls.Add(btnOK);
             Controls.Add(btnCancel);
-            FormBorderStyle = FormBorderStyle.FixedDialog;
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             MinimizeBox = false;
             Name = "AuthForm";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterParent;
             Text = "Authentication";
+            TopMost = true;
             ResumeLayout(false);
             PerformLayout();
         }
